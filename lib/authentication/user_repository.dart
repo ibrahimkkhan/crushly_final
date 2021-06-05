@@ -14,7 +14,7 @@ class UserRepository {
     required String email,
     required String password,
   }) async {
-    Map data = {'email': email, 'password': password};
+    Map data = {'email': email, 'password': password,'deviceToken':'3'};
 
     Map<String, dynamic> jsonData = {};
 
@@ -22,16 +22,16 @@ class UserRepository {
         await http.post(Uri.parse(url + "/authentication/login"), body: data);
 
     if (response.statusCode == 200) {
-      jsonData = json.decode(response.body);
-      print(jsonData["token"]);
-      storage.write(key: "jwt", value: jsonData["token"]);
+      jsonData = json.decode(response.body)["result"];
+      print(jsonData["jwtToken"]);
+      storage.write(key: "jwt", value: jsonData["jwtToken"]);
       print("jwt print ho rha hai");
       var jwt = await storage.read(key: "jwt");
       print(jwt);
     } else {
       print(response.body);
     }
-    return jsonData['token'];
+    return jsonData['jwtToken'];
   }
 
   Future<void> deleteToken() async {
