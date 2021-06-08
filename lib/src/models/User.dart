@@ -22,7 +22,7 @@ class User {
   final bool? hasRing;
   final bool? orignallySecret;
   final List<Story>? myfeed;
-  final bool notify;
+  final bool? notify;
   User({
     this.dateList,
     this.followCount,
@@ -33,7 +33,7 @@ class User {
     required this.id,
     this.nickName,
     this.revealTime,
-    required this.notify,
+    this.notify,
     this.myfeed,
     this.name,
     this.profilePhoto,
