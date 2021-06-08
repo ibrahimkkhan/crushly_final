@@ -16,11 +16,11 @@ class SignUp extends StatefulWidget {
 
 class NoKeyboardEditableText extends EditableText {
   NoKeyboardEditableText({
-    @required TextEditingController controller,
-    @required TextStyle style,
-    @required Color cursorColor,
+    required TextEditingController controller,
+    required TextStyle style,
+    required Color cursorColor,
     bool autofocus = false,
-    Color selectionColor,
+    required Color selectionColor,
   }) : super(
             controller: controller,
             focusNode: NoKeyboardEditableTextFocusNode(),
@@ -270,20 +270,20 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
 }
 
 class SignUpForm extends StatefulWidget {
-  SignUpForm({Key key}) : super(key: key);
+  SignUpForm({required Key key}) : super(key: key);
 
   _SignUpFormState createState() => _SignUpFormState();
 }
 
 class _SignUpFormState extends State<SignUpForm> with TickerProviderStateMixin {
-  AnimationController _animController;
-  Animation animationEmail,
+  late AnimationController _animController;
+  late Animation animationEmail,
       createAccountAnimation,
       animationPass,
       animationDOB,
       animationFN,
       animationLN;
-  String password, email, fname;
+  late String password, email, fname;
 
   @override
   void initState() {
@@ -413,10 +413,10 @@ class _SignUpFormState extends State<SignUpForm> with TickerProviderStateMixin {
                                     left: 10, right: 10, top: 0),
                                 child: TextFormField(
                                   validator: (text) =>
-                                      text == " " || text.isEmpty
+                                      text == " " || text!.isEmpty
                                           ? "please insert your first name "
                                           : null,
-                                  onSaved: (t) => fname = t,
+                                  onSaved: (t) => fname = t!,
                                   decoration: InputDecoration(
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
@@ -497,7 +497,7 @@ class _SignUpFormState extends State<SignUpForm> with TickerProviderStateMixin {
                                   //             .hasMatch(text)
                                   //         ? null
                                   //         : "insert a valid email",
-                                  onSaved: (t) => email = t,
+                                  onSaved: (t) => email = t!,
                                   decoration: InputDecoration(
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
@@ -574,7 +574,7 @@ class _SignUpFormState extends State<SignUpForm> with TickerProviderStateMixin {
                                   //   }
                                   //   return null;
                                   // },
-                                  onSaved: (t) => password = t,
+                                  onSaved: (t) => password = t!,
                                   decoration: InputDecoration(
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
@@ -619,7 +619,7 @@ class _SignUpFormState extends State<SignUpForm> with TickerProviderStateMixin {
                                   onPressed: () {
                                     var form = formKey.currentState;
 
-                                    if (form.validate()) {
+                                    if (form!.validate()) {
                                       form.save();
 
                                       BlocProvider.of<UserBloc>(context)

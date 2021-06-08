@@ -5,13 +5,13 @@ import 'package:flutter/animation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:crushly/Api/Api.dart';
-import 'package:crushly/Screens/Chat_Page.dart';
-import 'package:crushly/SharedPref/SharedPref.dart';
-import 'package:crushly/DB/AppDB.dart';
+import '../../Api/Api.dart';
+import '../../Screens/Chat_Page.dart';
+import '../../SharedPref/SharedPref.dart';
+import '../../DB/AppDB.dart';
 import 'package:flutter/services.dart';
-import 'package:crushly/models/Message.dart';
-import 'package:crushly/models/User.dart';
+import '../../models/Message.dart';
+import '../../models/User.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart'
     as localLib;
 

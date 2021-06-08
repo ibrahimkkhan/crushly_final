@@ -1,6 +1,6 @@
-import 'package:crushly/BLocs/Massenger_Bloc/bloc.dart';
+import '../Messenger_Bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:crushly/Screens/Chat_Page.dart';
+import '../Screens/Chat_Page.dart';
 
 @immutable
 abstract class MassengerState {}

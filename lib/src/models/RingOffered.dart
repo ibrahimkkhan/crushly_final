@@ -10,7 +10,7 @@ class RingOffered {
   final String id;
   final User owner;
 
-  RingOffered({this.owner, this.id});
+  RingOffered({required this.owner, required this.id});
   factory RingOffered.fromJson(Map<String, dynamic> json) =>
       _$RingOfferedFromJson(json);
 }

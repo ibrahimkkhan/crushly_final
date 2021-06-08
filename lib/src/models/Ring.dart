@@ -6,24 +6,20 @@ part 'Ring.g.dart';
 
 @JsonSerializable()
 class Ring {
-  @JsonKey(nullable: true)
-  final List<User> offeredTo;
+  final List<User>? offeredTo;
   @JsonKey(name: "_id")
   final String id;
   final String owner;
-  @JsonKey(nullable: true)
-  final bool isWithOwner;
-  @JsonKey(nullable: true)
-  final List<User> previousHolders;
-  @JsonKey(nullable: true)
-  final Map<String, String> currentHolder;
+  final bool? isWithOwner;
+  final List<User>? previousHolders;
+  final Map<String, String>? currentHolder;
 
   Ring(
-      {this.owner,
+      {required this.owner,
       this.offeredTo,
       this.currentHolder,
       this.isWithOwner,
       this.previousHolders,
-      this.id});
+      required this.id});
   factory Ring.fromJson(Map<String, dynamic> json) => _$RingFromJson(json);
 }
