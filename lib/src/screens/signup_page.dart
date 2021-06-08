@@ -7,7 +7,7 @@ import '../bLocs/User_Bloc/bloc.dart';
 import 'package:flutter/material.dart';
 
 import 'package:page_indicator/page_indicator.dart';
-import 'package:crushly/Screens/MyProfile.dart';
+// import 'package:crushly/Screens/MyProfile.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -206,7 +206,7 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
                           Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => MyProfile()));
+                                  builder: (context) => Text("Profile")));
                         },
                         child: Text(
                           "Create Account",
@@ -333,7 +333,7 @@ class _SignUpFormState extends State<SignUpForm> with TickerProviderStateMixin {
     return Scaffold(
         backgroundColor: Colors.white,
         body: BlocListener<UserBloc, UserState>(
-          condition: (prevoius, current) {
+          listenWhen: (prevoius, current) {
             if (current is AddUserSuccess || current is AddUserFailed)
               return true;
             else
@@ -592,7 +592,7 @@ class _SignUpFormState extends State<SignUpForm> with TickerProviderStateMixin {
                           ),
                         ),
                         BlocBuilder<UserBloc, UserState>(
-                            condition: (prev, cur) {
+                            buildWhen: (prev, cur) {
                           return cur is LoadingFetch || cur is AddUserFailed;
                         }, builder: (context, state) {
                           if (state is LoadingFetch) {

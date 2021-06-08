@@ -8,30 +8,30 @@ part of 'User.dart';
 
 User _$UserFromJson(Map<String, dynamic> json) {
   return User(
-    dateList: (json['dateList'] as List<dynamic>)
-        .map((e) => User.fromJson(e as Map<String, dynamic>))
+    dateList: (json['dateList'] as List<dynamic>?)
+        ?.map((e) => User.fromJson(e as Map<String, dynamic>))
         .toList(),
-    followCount: json['followCount'] as int,
-    orignallySecret: json['orignallySecret'] as bool,
-    presentlySecret: json['presentlySecret'] as bool,
-    followList: (json['followList'] as List<dynamic>)
-        .map((e) => User.fromJson(e as Map<String, dynamic>))
+    followCount: json['followCount'] as int?,
+    orignallySecret: json['orignallySecret'] as bool?,
+    presentlySecret: json['presentlySecret'] as bool?,
+    followList: (json['followList'] as List<dynamic>?)
+        ?.map((e) => User.fromJson(e as Map<String, dynamic>))
         .toList(),
-    hasRing: json['hasRing'] as bool,
+    hasRing: json['hasRing'] as bool?,
     id: json['_id'] as String,
-    nickName: json['nickName'] as String,
-    revealTime: json['revealTime'] as String,
+    nickName: json['nickName'] as String?,
+    revealTime: json['revealTime'] as String?,
     notify: json['notify'] as bool,
-    myfeed: (json['myfeed'] as List<dynamic>)
-        .map((e) => Story.fromJson(e as Map<String, dynamic>))
+    myfeed: (json['myfeed'] as List<dynamic>?)
+        ?.map((e) => Story.fromJson(e as Map<String, dynamic>))
         .toList(),
-    name: json['name'] as String,
-    profilePhoto: json['profilePhoto'] as String,
-    ringsHolding: (json['ringsHolding'] as List<dynamic>)
-        .map((e) => RingOffered.fromJson(e as Map<String, dynamic>))
+    name: json['name'] as String?,
+    profilePhoto: json['profilePhoto'] as String?,
+    ringsHolding: (json['ringsHolding'] as List<dynamic>?)
+        ?.map((e) => RingOffered.fromJson(e as Map<String, dynamic>))
         .toList(),
-    ringsOffered: (json['ringsOffered'] as List<dynamic>)
-        .map((e) => RingOffered.fromJson(e as Map<String, dynamic>))
+    ringsOffered: (json['ringsOffered'] as List<dynamic>?)
+        ?.map((e) => RingOffered.fromJson(e as Map<String, dynamic>))
         .toList(),
   );
 }

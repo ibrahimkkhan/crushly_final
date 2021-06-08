@@ -9,12 +9,12 @@ part of 'BaseOtherUser.dart';
 BaseOtherUser _$BaseOtherUserFromJson(Map<String, dynamic> json) {
   return BaseOtherUser(
     person: OtherUser.fromJson(json['person'] as Map<String, dynamic>),
-    ringStatus: json['ringStatus'] as int,
+    ringStatus: json['ringStatus'] as int?,
     orginalUserId: json['orginalUserId'] as String,
     followed: json['followed'] as bool,
     isDate: json['isDate'] as bool,
-    ringStatusOther: json['ringStatusOther'] as String,
-    presentlySecret: json['presentlySecret'] as bool,
+    ringStatusOther: json['ringStatusOther'] as String?,
+    presentlySecret: json['presentlySecret'] as bool?,
   );
 }
 

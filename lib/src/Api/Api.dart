@@ -26,7 +26,7 @@ class Api {
   // when open the app if the user is already sign in then get the user info
   Future<Map<String, dynamic>> fetchUser(String id) async {
     try {
-      final response = await _httpClient.get(BaseUrl + "/person/$id");
+      final response = await _httpClient.get(Uri.parse(BaseUrl + "/person/$id"));
 
       if (response.statusCode == 200) {
         print(response.body);
@@ -59,7 +59,7 @@ class Api {
 // to get info about other user profile
   Future<Map<String, dynamic>> fetchOtherUser(String myId, String id) async {
     try {
-      final response = await _httpClient.get(BaseUrl + "/person/$myId/$id");
+      final response = await _httpClient.get(Uri.parse(BaseUrl + "/person/$myId/$id"));
       if (response.statusCode == 200) {
         print(response.body);
         final baseResponse = BaseOtherUser.fromJson(jsonDecode(response.body));
@@ -97,7 +97,7 @@ class Api {
   Future<Map<String, dynamic>> newUser(String name, String token) async {
     final data = {"name": name, "deviceToken": token};
     try {
-      final response = await _httpClient.post(BaseUrl + "/person", body: data);
+      final response = await _httpClient.post(Uri.parse(BaseUrl + "/person"), body: data);
       // print(response.statusCode);
       print(response.body);
       if (response.statusCode == 201) {
@@ -125,7 +125,7 @@ class Api {
   Future<List<User>> search(String query, String myId) async {
     try {
       final response =
-          await _httpClient.get(BaseUrl + "/search/$myId?query=$query");
+          await _httpClient.get(Uri.parse(BaseUrl + "/search/$myId?query=$query"));
       if (response.statusCode == 200) {
         print(response.body);
         final baseResponse = BaseSearch.fromJson(jsonDecode(response.body));
@@ -147,25 +147,25 @@ class Api {
     }
   }
 
-  Future<String> setPhoto(File image, String id) async {
+  Future<String?> setPhoto(File image, String id) async {
     try {
       String extention = p.extension(image.path);
       extention = extention.substring(1);
       print(extention);
 
       final response = await _httpClient
-          .get(BaseUrl + "/photo/upload/$id?contentType=image/$extention");
+          .get(Uri.parse(BaseUrl + "/photo/upload/$id?contentType=image/$extention"));
       if (response.statusCode == 200) {
         print(response.body);
         final baseResponse = BasePhoto.fromJson(jsonDecode(response.body));
         if (baseResponse.url != null) {
-          final http.Response d = await _httpClient.put(baseResponse.url,
+          final http.Response d = await _httpClient.put(Uri.parse(baseResponse.url),
               headers: {"Content-Type": "image/$extention"},
               body: image.readAsBytesSync());
 
           if (d.statusCode == 200) {
-            final patchResponse = await _httpClient.patch(
-                BaseUrl + "/person/$id",
+            final patchResponse = await _httpClient.patch(Uri.parse(
+                BaseUrl + "/person/$id"),
                 body: {"profilePhoto": baseResponse.key});
             print(patchResponse.statusCode);
             print(patchResponse.body);
@@ -198,7 +198,7 @@ class Api {
     String newName;
     try {
       final response = await _httpClient
-          .post(BaseUrl + "/follow/$myId/$otherID", body: data);
+          .post(Uri.parse(BaseUrl + "/follow/$myId/$otherID"), body: data);
       //-1 error
       // 0 followed
       //1 follwed and match
@@ -228,7 +228,7 @@ class Api {
   //this api not used in the app yet
   Future<List<User>> getPeople(String myId) async {
     try {
-      final response = await _httpClient.get(BaseUrl + "/people/$myId");
+      final response = await _httpClient.get(Uri.parse(BaseUrl + "/people/$myId"));
 
       if (response.statusCode == 200) {
         final baseResponse = BasePeople.fromJson(jsonDecode(response.body));
@@ -253,7 +253,7 @@ class Api {
   Future<bool> offerRing(String ownerId, String recieverId) async {
     try {
       final response =
-          await _httpClient.post(BaseUrl + "/ring/offer/$ownerId/$recieverId");
+          await _httpClient.post(Uri.parse(BaseUrl + "/ring/offer/$ownerId/$recieverId"));
       print(response.statusCode);
 
       return response.statusCode == 201;
@@ -270,7 +270,7 @@ class Api {
       String reciever, String ringId, String isAccept) async {
     try {
       final response = await _httpClient
-          .get(BaseUrl + "/ring/offer/$isAccept/$reciever/$ringId");
+          .get(Uri.parse(BaseUrl + "/ring/offer/$isAccept/$reciever/$ringId"));
       print(response.statusCode);
 
       return response.statusCode == 200;
@@ -286,7 +286,7 @@ class Api {
   Future<bool> cancelOffer(String ownerId, String recieverId) async {
     try {
       final response = await _httpClient
-          .delete(BaseUrl + "/ring/offer/$ownerId/$recieverId");
+          .delete(Uri.parse(BaseUrl + "/ring/offer/$ownerId/$recieverId"));
 
       return response.statusCode == 200;
     } on SocketException {
@@ -301,7 +301,7 @@ class Api {
   Future<bool> askBackRing(String ownerId, String recieverId) async {
     try {
       final response =
-          await _httpClient.patch(BaseUrl + "/ring/offer/$ownerId/$recieverId");
+          await _httpClient.patch(Uri.parse(BaseUrl + "/ring/offer/$ownerId/$recieverId"));
       print(response.body + response.statusCode.toString());
       return true;
     } on SocketException {
@@ -316,7 +316,7 @@ class Api {
   //get info about the ring
   Future<Ring> getRing(String ownerId) async {
     try {
-      final response = await _httpClient.get(BaseUrl + "/ring/$ownerId");
+      final response = await _httpClient.get(Uri.parse(BaseUrl + "/ring/$ownerId"));
       print(response.body);
       final Ring ring = Ring.fromJson(jsonDecode(response.body)["ring"]);
       if (ring != null) {
@@ -336,7 +336,7 @@ class Api {
   Future<bool> returnRing(String reciverId, String ringId) async {
     try {
       final response =
-          await _httpClient.post(BaseUrl + "/ring/return/$reciverId/$ringId");
+          await _httpClient.post(Uri.parse(BaseUrl + "/ring/return/$reciverId/$ringId"));
       print(response.body);
 
       return true;
@@ -352,11 +352,11 @@ class Api {
   //get the unread messages when the user become online
   Future<Map<String, dynamic>> getQueues(String myId) async {
     try {
-      final response = await _httpClient.get(BaseUrl + "/dequeue?id=$myId");
+      final response = await _httpClient.get(Uri.parse(BaseUrl + "/dequeue?id=$myId"));
       print(response.body);
       final json = jsonDecode(response.body);
 
-      final List<Message> messages = (json['queues']['messageQueue'] as List)
+      final List<Message?>? messages = (json['queues']['messageQueue'] as List)
           ?.map((e) => e == null
               ? null
               : Message(
@@ -366,7 +366,7 @@ class Api {
                   (e as Map<String, dynamic>)["Author"],
                   (e as Map<String, dynamic>)["reciever"]))
           ?.toList();
-      final List<User> followees = (json['queues']['followeeQueue'] as List)
+      final List<User?>? followees = (json['queues']['followeeQueue'] as List)
           ?.map((e) => e == null
               ? null
               : User(
@@ -378,7 +378,7 @@ class Api {
                       (e as Map<String, dynamic>)["presentlySecret"],
                   notify: (e as Map<String, dynamic>)["notify"]))
           ?.toList();
-      final List<User> revealList = (json['queues']['revealQueue'] as List)
+      final List<User?>? revealList = (json['queues']['revealQueue'] as List)
           ?.map((e) => e == null
               ? null
               : User(
@@ -392,7 +392,7 @@ class Api {
                   nickName: (e as Map<String, dynamic>)["nickName"],
                   notify: (e as Map<String, dynamic>)["notify"]))
           ?.toList();
-      final List<User> dateList = (json['queues']['dateQueue'] as List)
+      final List<User?>? dateList = (json['queues']['dateQueue'] as List)
           ?.map((e) => e == null
               ? null
               : User(
@@ -429,12 +429,12 @@ class Api {
       String extention = p.extension(imagePath);
       extention = extention.substring(1);
       final response = await _httpClient
-          .get(BaseUrl + "/photo/upload/$userId?contentType=image/$extention");
+          .get(Uri.parse(BaseUrl + "/photo/upload/$userId?contentType=image/$extention"));
       if (response.statusCode == 200) {
         print(response.body);
         final baseResponse = BasePhoto.fromJson(jsonDecode(response.body));
         if (baseResponse.url != null) {
-          final http.Response d = await _httpClient.put(baseResponse.url,
+          final http.Response d = await _httpClient.put(Uri.parse(baseResponse.url),
               headers: {"Content-Type": "image/$extention"},
               body: imageData.buffer.asUint8List());
 
@@ -446,7 +446,7 @@ class Api {
           };
           if (d.statusCode == 200) {
             final response = await _httpClient
-                .post(BaseUrl + "/post/new/$userId", body: map);
+                .post(Uri.parse(BaseUrl + "/post/new/$userId"), body: map);
             print(response.statusCode);
 
             if (response.statusCode == 200) {
@@ -472,7 +472,7 @@ class Api {
   Future<bool> reveal(String myId, String revealTo) async {
     try {
       final response = await _httpClient
-          .post(BaseUrl + "/person/revealation/$myId/$revealTo");
+          .post(Uri.parse(BaseUrl + "/person/revealation/$myId/$revealTo"));
       print(response.body);
 
       if (response.statusCode == 200) {
@@ -493,7 +493,7 @@ class Api {
   Future<String> block(String myId, String blockId) async {
     try {
       final response =
-          await _httpClient.post(BaseUrl + "/person/block/$myId/$blockId");
+          await _httpClient.post(Uri.parse(BaseUrl + "/person/block/$myId/$blockId"));
       print(response.body);
 
       if (response.statusCode == 200) {

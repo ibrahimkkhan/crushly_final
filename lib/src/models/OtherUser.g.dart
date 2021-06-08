@@ -8,25 +8,25 @@ part of 'OtherUser.dart';
 
 OtherUser _$OtherUserFromJson(Map<String, dynamic> json) {
   return OtherUser(
-    dateList: json['dateList'] as List<dynamic>,
-    followCount: json['followCount'] as int,
-    followList: (json['followList'] as List<dynamic>)
-        .map((e) => OtherUser.fromJson(e as Map<String, dynamic>))
+    dateList: json['dateList'] as List<dynamic>?,
+    followCount: json['followCount'] as int?,
+    followList: (json['followList'] as List<dynamic>?)
+        ?.map((e) => OtherUser.fromJson(e as Map<String, dynamic>))
         .toList(),
     id: json['_id'] as String,
-    myfeed: json['myfeed'] as List<dynamic>,
+    myfeed: json['myfeed'] as List<dynamic>?,
     name: json['name'] as String,
-    profilePhoto: json['profilePhoto'] as String,
-    ringsHolding: (json['ringsHolding'] as List<dynamic>)
-        .map((e) => e as String)
+    profilePhoto: json['profilePhoto'] as String?,
+    ringsHolding: (json['ringsHolding'] as List<dynamic>?)
+        ?.map((e) => e as String)
         .toList(),
-    ringsOffered: (json['ringsOffered'] as List<dynamic>)
-        .map((e) => Ring.fromJson(e as Map<String, dynamic>))
+    ringsOffered: (json['ringsOffered'] as List<dynamic>?)
+        ?.map((e) => Ring.fromJson(e as Map<String, dynamic>))
         .toList(),
-    hasRing: json['hasRing'] as bool,
-    nickName: json['nickName'] as String,
-    revealTime: json['revealTime'] as String,
-    presentlySecret: json['presentlySecret'] as bool,
+    hasRing: json['hasRing'] as bool?,
+    nickName: json['nickName'] as String?,
+    revealTime: json['revealTime'] as String?,
+    presentlySecret: json['presentlySecret'] as bool?,
   );
 }
 

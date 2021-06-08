@@ -9,13 +9,15 @@ part of 'Ring.dart';
 Ring _$RingFromJson(Map<String, dynamic> json) {
   return Ring(
     owner: json['owner'] as String,
-    offeredTo: (json['offeredTo'] as List<dynamic>)
-        .map((e) => User.fromJson(e as Map<String, dynamic>))
+    offeredTo: (json['offeredTo'] as List<dynamic>?)
+        ?.map((e) => User.fromJson(e as Map<String, dynamic>))
         .toList(),
-    currentHolder: Map<String, String>.from(json['currentHolder'] as Map),
-    isWithOwner: json['isWithOwner'] as bool,
-    previousHolders: (json['previousHolders'] as List<dynamic>)
-        .map((e) => User.fromJson(e as Map<String, dynamic>))
+    currentHolder: (json['currentHolder'] as Map<String, dynamic>?)?.map(
+      (k, e) => MapEntry(k, e as String),
+    ),
+    isWithOwner: json['isWithOwner'] as bool?,
+    previousHolders: (json['previousHolders'] as List<dynamic>?)
+        ?.map((e) => User.fromJson(e as Map<String, dynamic>))
         .toList(),
     id: json['_id'] as String,
   );
