@@ -21,7 +21,7 @@ User _$UserFromJson(Map<String, dynamic> json) {
     id: json['_id'] as String,
     nickName: json['nickName'] as String?,
     revealTime: json['revealTime'] as String?,
-    notify: json['notify'] as bool,
+    notify: json['notify'] as bool?,
     myfeed: (json['myfeed'] as List<dynamic>?)
         ?.map((e) => Story.fromJson(e as Map<String, dynamic>))
         .toList(),

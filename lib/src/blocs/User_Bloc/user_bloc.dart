@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:crushly/Api/Api.dart';
-import 'package:crushly/DB/AppDB.dart';
+import '../../Api/Api.dart';
+import '../../DB/AppDB.dart';
 import '../../SharedPref/SharedPref.dart';
 import '../../models/User.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
