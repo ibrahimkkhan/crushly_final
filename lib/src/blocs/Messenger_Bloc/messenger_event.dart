@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/scheduler.dart';
 import 'package:meta/meta.dart';
-import 'package:crushly/Screens/Chat_Page.dart';
-import 'package:crushly/models/Message.dart';
+import '../../Screens/Chat_Page.dart';
+import '../../models/Message.dart';
 
 @immutable
 abstract class MassengerEvent {}

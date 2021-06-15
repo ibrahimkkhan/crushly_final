@@ -1,6 +1,5 @@
-import '../Messenger_Bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import '../Screens/Chat_Page.dart';
+import '../../Screens/Chat_Page.dart';
 
 @immutable
 abstract class MassengerState {}

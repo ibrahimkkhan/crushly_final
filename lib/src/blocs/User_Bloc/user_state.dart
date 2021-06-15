@@ -1,6 +1,5 @@
-import 'package:crushly/DB/AppDB.dart';
+import '../../DB/AppDB.dart';
 import 'package:meta/meta.dart';
-import 'package:crushly/models/User.dart';
 
 @immutable
 abstract class UserState {}

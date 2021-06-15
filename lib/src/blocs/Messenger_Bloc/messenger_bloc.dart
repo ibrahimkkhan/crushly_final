@@ -12,15 +12,30 @@ import '../../DB/AppDB.dart';
 import 'package:flutter/services.dart';
 import '../../models/Message.dart';
 import '../../models/User.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart'
-    as localLib;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import './bloc.dart';
 
 class MassengerBloc extends Bloc<MassengerEvent, MassengerState> {
   final AppDataBase appDataBase;
-  localLib.FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
-  MassengerBloc(this.appDataBase) {
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+  static const AndroidInitializationSettings initializationSettingsAndroid =
+  AndroidInitializationSettings('app_icon');
+  final IOSInitializationSettings initializationSettingsIOS =
+  IOSInitializationSettings(
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
+      onDidReceiveLocalNotification:
+          (int id, String? title, String? body, String? payload) async {
+        didReceiveLocalNotificationSubject.add(ReceivedNotification(
+            id: id, title: title, body: body, payload: payload));
+      });
+  MassengerBloc(this.appDataBase) : super(InitialMassengerState()) {
+
+
+
     flutterLocalNotificationsPlugin =
         localLib.FlutterLocalNotificationsPlugin();
     var initializationSettingsAndroid =
