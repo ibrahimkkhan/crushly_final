@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import './login.dart';
+import 'login.dart';
 // import 'package:influinsta_login/src/screens/sign_up.dart';
 
 class LoginForm extends StatefulWidget {

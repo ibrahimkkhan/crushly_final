@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'authentication/user_repository.dart';
-import 'authentication/authentication.dart';
-import 'login/login.dart';
+import 'src/authentication/user_repository.dart';
+import 'src/authentication/authentication.dart';
+import 'src/login/login.dart';
 import 'package:bloc/bloc.dart';
 
 void main() {
