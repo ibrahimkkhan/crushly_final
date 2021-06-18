@@ -1,13 +1,8 @@
 import 'dart:convert';
 
-import 'package:crushly/BLocs/Massenger_Bloc/massenger_bloc.dart';
-import 'package:crushly/BLocs/Massenger_Bloc/massenger_event.dart';
-import 'package:crushly/BLocs/Massenger_Bloc/massenger_state.dart';
-import 'package:crushly/BLocs/auth_bloc/auth_bloc.dart';
-import 'package:crushly/BLocs/auth_bloc/auth_event.dart';
-import 'package:crushly/BLocs/auth_bloc/auth_state.dart';
-import 'package:crushly/MainScreen.dart';
-import 'package:crushly/Screens/auth/sign_in.dart';
+import '../../blocs/Messenger_Bloc/bloc.dart';
+import '../../blocs/auth_bloc/bloc.dart';
+// import 'package:crushly/MainScreen.dart';
 import 'birthday_view.dart';
 import 'email_and_password_view.dart';
 import 'full_name_view.dart';
@@ -23,7 +18,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import 'greek_house.dart'; // for the utf8.encode method
+// import 'greek_house.dart'; // for the utf8.encode method
 
 double value = 1 / 7;
 
@@ -34,12 +29,12 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
   final _bloc = new AuthBloc();
-  FocusNode focus1;
-  FocusNode focus2;
+  late FocusNode focus1;
+  late FocusNode focus2;
   PageController _pageController = PageController(initialPage: PAGE_NAME);
   double currentIndicatorPage = 0.0;
   int currentPage = PAGE_NAME;
-  Size screenSize;
+  late Size screenSize;
   bool birthdayError = false;
   bool febError = false;
   bool showIcon = false;
@@ -50,8 +45,8 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
     focus1 = FocusNode();
     focus2 = FocusNode();
     _pageController.addListener(
-      () => WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {
-            currentPage = _pageController.page.toInt();
+      () => WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
+            currentPage = _pageController.page!.toInt();
             FocusScope.of(context).unfocus();
           })),
     );
@@ -70,11 +65,12 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
     screenSize = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async {
-        if (_pageController.page.floor() == PAGE_NAME) {
+        if (_pageController.page!.floor() == PAGE_NAME) {
           return true;
         } else {
-          if (_pageController.page.floor() == PAGE_GENDER)
+          if (_pageController.page!.floor() == PAGE_GENDER) {
             _bloc.add(ResetEmailAvailable());
+          }
           _pageController.previousPage(
               duration: Duration(milliseconds: 350), curve: Curves.ease);
           return false;
@@ -83,7 +79,7 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
       child: Scaffold(
         //no need scrollview anymore this will fix it.
         resizeToAvoidBottomInset: false,
-        resizeToAvoidBottomPadding: false,
+        // resizeToAvoidBottomPadding: false,
         backgroundColor: pageBackground,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
@@ -95,16 +91,16 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
               color: pink,
             ),
             onPressed: () {
-              if (_pageController.page.floor() == PAGE_NAME) {
+              if (_pageController.page!.floor() == PAGE_NAME) {
                 Navigator.of(context).pop();
-                return true;
+                return;
               } else {
                 print('page number is ${_pageController.page}');
-                if (_pageController.page.floor() == PAGE_GENDER)
+                if (_pageController.page!.floor() == PAGE_GENDER)
                   _bloc.add(ResetEmailAvailable());
                 _pageController.previousPage(
                     duration: Duration(milliseconds: 350), curve: Curves.ease);
-                return false;
+                return;
               }
             },
           ),
@@ -122,12 +118,13 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
               flex: 4,
               child: BlocListener(
                 bloc: BlocProvider.of<MassengerBloc>(context),
-                condition: (_, cur) => cur is Connected,
+                listenWhen: (_, cur) => cur is Connected,
                 listener: (context, MassengerState state) {
                   print('state in listener $state');
                   Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (_) => MainScreen()),
+                    // MaterialPageRoute(builder: (_) => MainScreen()),
+                    MaterialPageRoute(builder: (_) => Text("Mainscreen")),
                     (_) => false,
                   );
                   print('uploaded and connected');
@@ -139,7 +136,7 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
                       print('statee is ${state}');
                       if (state.isEmailAvailable != null &&
                           state.isEmailAvailable &&
-                          _pageController.page.floor() != PAGE_PHOTOS) {
+                          _pageController.page!.floor() != PAGE_PHOTOS) {
                         _pageController.nextPage(
                             duration: Duration(milliseconds: 350),
                             curve: Curves.ease);
@@ -157,7 +154,7 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
 //                      );
 //                    }
                       if (state.signUpSuccessfully &&
-                          _pageController.page.floor() != PAGE_PHOTOS) {
+                          _pageController.page!.floor() != PAGE_PHOTOS) {
                         _pageController.nextPage(
                             duration: Duration(milliseconds: 350),
                             curve: Curves.ease);
@@ -312,14 +309,14 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
                                     });
                                   },
                                 ),
-                                GreekHouse(
-                                  houseName: _bloc.greekHouse,
-                                  houseNameChanged: (greekHouse) {
-                                    setState(() {
-                                      _bloc.greekHouse = greekHouse;
-                                    });
-                                  },
-                                ),
+                                // GreekHouse(
+                                //   houseName: _bloc.greekHouse,
+                                //   houseNameChanged: (greekHouse) {
+                                //     setState(() {
+                                //       _bloc.greekHouse = greekHouse;
+                                //     });
+                                //   },
+                                // ),
                                 // SchoolChoiceView(
                                 //   schoolName: _bloc.schoolName != null
                                 //       ? _bloc.schoolName.name
@@ -416,7 +413,7 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
                                 }
                               } else if (currentPage == PAGE_EMAIL_AND_PASSWORD)
                                 _bloc.add(CheckEmail(_bloc.email));
-                              else if (_pageController.page.floor() !=
+                              else if (_pageController.page!.floor() !=
                                   PAGE_PHOTOS)
                                 _pageController.nextPage(
                                   duration: Duration(milliseconds: 350),
@@ -455,10 +452,10 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
         return _bloc.firstName.isNotEmpty &&
             _bloc.lastName.isNotEmpty &&
             (regExp.stringMatch(_bloc.firstName) != null &&
-                regExp.stringMatch(_bloc.firstName).length ==
+                regExp.stringMatch(_bloc.firstName)!.length ==
                     _bloc.firstName.length) &&
             (regExp.stringMatch(_bloc.lastName) != null &&
-                regExp.stringMatch(_bloc.lastName).length ==
+                regExp.stringMatch(_bloc.lastName)!.length ==
                     _bloc.lastName.length);
       case PAGE_EMAIL_AND_PASSWORD:
         return state.signUpValidation;

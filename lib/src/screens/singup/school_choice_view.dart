@@ -2,16 +2,16 @@ import 'dart:convert';
 
 import '../../resources/UniApi.dart';
 import 'package:crushly/Common/UniversitySearchDelegate.dart';
-import 'package:crushly/Screens/auth/singup/greek_house.dart';
-import 'package:crushly/Screens/auth/singup/school_view.dart';
-import 'package:crushly/Screens/auth/singup/signup_page.dart';
-import 'package:crushly/models/University.dart';
-import 'package:crushly/theme.dart';
-import 'package:crushly/utils/selectable_button.dart';
+// import 'package:crushly/Screens/auth/singup/greek_house.dart';
+import '../../screens/singup/school_view.dart';
+import '../../screens/singup/signup_page.dart';
+import '../../models/University.dart';
+import '../../theme/theme.dart';
+import '../../utils/selectable_button.dart';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:keyboard_visibility/keyboard_visibility.dart';
+// import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:page_transition/page_transition.dart';
 
 class SchoolChoiceView extends StatefulWidget {
