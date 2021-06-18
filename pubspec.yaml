@@ -31,6 +31,8 @@ dependencies:
   auto_size_text: ^3.0.0-nullsafety.0
   fluttertoast: ^8.0.7
   multi_image_picker2: ^5.0.2
+  flutter_svg: ^0.22.0
+  permission_handler: ^8.1.1
   flutter:
     sdk: flutter
 

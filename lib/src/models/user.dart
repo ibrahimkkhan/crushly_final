@@ -6,13 +6,13 @@ class User extends Equatable{
   final List<User>? followList;
   final List<User>? dateList;
   final String id;
-  final String name;
+  final String? name;
   final int? followCount;
   final String? profilePic;
 
   User(
   {required this.id,
-    required this.name,
+    this.name,
     this.followCount,
     this.profilePic,
     this.followList,

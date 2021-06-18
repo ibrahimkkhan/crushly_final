@@ -13,23 +13,15 @@ import 'email_and_password_view.dart';
 import 'full_name_view.dart';
 import 'gender_screen.dart';
 import 'gender_view.dart';
-import 'school_choice_view.dart';
 import 'sign_up_enter_university.dart';
 import 'upload_photos_view.dart';
-import 'package:crushly/SharedPref/SharedPref.dart';
 import '../../theme/theme.dart';
-import 'package:crushly/utils/CustomDotsIndicator.dart';
-import 'package:crushly/utils/constants.dart';
-import 'package:crushly/utils/our_toast.dart';
-import 'package:crypto/crypto.dart';
+import '../../utils/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:oktoast/oktoast.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'dart:convert';
 
 import 'greek_house.dart'; // for the utf8.encode method
 
