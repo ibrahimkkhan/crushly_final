@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import '../../Api/Api.dart';
+import '../../resources/Api.dart';
 import '../../DB/AppDB.dart';
 import '../../SharedPref/SharedPref.dart';
 import '../../models/User.dart';

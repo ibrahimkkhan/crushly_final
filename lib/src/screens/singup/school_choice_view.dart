@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import '../../resources/UniApi.dart';
-import 'package:crushly/Common/UniversitySearchDelegate.dart';
+import '../../common/UniversitySearchDelegate.dart';
 // import 'package:crushly/Screens/auth/singup/greek_house.dart';
 import '../../screens/singup/school_view.dart';
 import '../../screens/singup/signup_page.dart';
@@ -16,16 +16,16 @@ import 'package:page_transition/page_transition.dart';
 
 class SchoolChoiceView extends StatefulWidget {
   final Function(University) schoolNameChanged;
-  final Function(String) greekHouseChanged;
+  // final Function(String) greekHouseChanged;
   final String schoolName;
-  final String greekHouse;
+  // final String greekHouse;
 
   const SchoolChoiceView({
-    Key key,
-    this.schoolNameChanged,
-    this.greekHouseChanged,
-    this.greekHouse,
-    this.schoolName,
+    Key? key,
+    required this.schoolNameChanged,
+    // this.greekHouseChanged,
+    // this.greekHouse,
+    required this.schoolName,
   }) : super(key: key);
 
   @override
@@ -33,13 +33,13 @@ class SchoolChoiceView extends StatefulWidget {
 }
 
 class _SchoolChoiceViewState extends State<SchoolChoiceView> {
-  SchoolType selectedSchoolType;
+  late SchoolType selectedSchoolType;
   String uniName = "";
   //String selectedSchoolName;
   //String selectedGreekHouse;
 
-  PageController _controller;
-  Size screenSize;
+  late PageController _controller;
+  late Size screenSize;
   @override
   void initState() {
     // selectedSchoolName = widget.schoolName;
@@ -53,7 +53,7 @@ class _SchoolChoiceViewState extends State<SchoolChoiceView> {
   Widget build(BuildContext context) {
     value = 6 / 7;
     screenSize = MediaQuery.of(context).size;
-    print(widget.greekHouse);
+    // print(widget.greekHouse);
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -128,35 +128,35 @@ class _SchoolChoiceViewState extends State<SchoolChoiceView> {
                 SizedBox(
                   height: screenSize.height / 27.06,
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0),
-                  child: SelectableButton(
-                    option: widget.greekHouse.isNotEmpty
-                        ? widget.greekHouse
-                        : 'Greek House',
-                    selectedOption:
-                        widget.greekHouse.isNotEmpty ? widget.greekHouse : '',
-                    onClick: () {
-                      selectedSchoolType = SchoolType.greekHouse;
-                      Navigator.push(
-                          context,
-                          PageTransition(
-                            child: GreekHouse(
-                                houseName: widget.greekHouse,
-                                houseNameChanged: (greekHouse) {
-                                  widget.greekHouseChanged(greekHouse);
-                                  //                       selectedGreekHouse = greekHouse;
-                                }),
-                            type: PageTransitionType.fade,
-                            alignment: Alignment.center,
-                          ));
-                      /*_controller.nextPage(
-                          duration: Duration(milliseconds: 350),
-                          curve: Curves.easeIn);
-                      setState(() {});*/
-                    },
-                  ),
-                ),
+                // Padding(
+                //   padding: EdgeInsets.symmetric(horizontal: 20.0),
+                //   child: SelectableButton(
+                //     option: widget.greekHouse.isNotEmpty
+                //         ? widget.greekHouse
+                //         : 'Greek House',
+                //     selectedOption:
+                //         widget.greekHouse.isNotEmpty ? widget.greekHouse : '',
+                //     onClick: () {
+                //       selectedSchoolType = SchoolType.greekHouse;
+                //       Navigator.push(
+                //           context,
+                //           PageTransition(
+                //             child: GreekHouse(
+                //                 houseName: widget.greekHouse,
+                //                 houseNameChanged: (greekHouse) {
+                //                   widget.greekHouseChanged(greekHouse);
+                //                   //                       selectedGreekHouse = greekHouse;
+                //                 }),
+                //             type: PageTransitionType.fade,
+                //             alignment: Alignment.center,
+                //           ));
+                //       /*_controller.nextPage(
+                //           duration: Duration(milliseconds: 350),
+                //           curve: Curves.easeIn);
+                //       setState(() {});*/
+                //     },
+                //   ),
+                // ),
               ],
             ),
           )

@@ -6,7 +6,7 @@ class UniversityList {
   });
 
   UniversityList.fromJson(Map<String, dynamic> json) {
-    List<University> uniList=[];
+    List<University> uniList = [];
 
     json['results'].forEach((value) {
       uniList.add(University.fromJson(value));
