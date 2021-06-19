@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
-import 'package:crushly/utils/constants.dart';
+import '../../utils/constants.dart';
 
 import 'auth_bloc.dart';
 
@@ -58,8 +58,7 @@ abstract class SignUpState extends AuthState
 
   bool get uploadPhotoSuccessfully;
 
-  @nullable
-  bool get isEmailAvailable;
+  bool? get isEmailAvailable;
 
   int get signUpError;
 
@@ -67,7 +66,7 @@ abstract class SignUpState extends AuthState
 
   factory SignUpState([updates(SignUpStateBuilder b)]) = _$SignUpState;
 
-  static final _bloc = new AuthBloc();
+  static final _bloc = new AuthBloc(AuthInitialState());
 
   // final isEmailPresent = _bloc.email != null ? true : false;
   // final isPasswordPresent = _bloc.password != null ? true : false;

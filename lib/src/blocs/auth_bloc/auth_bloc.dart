@@ -1,21 +1,18 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import 'package:crushly/Api/Api.dart';
-import 'package:crushly/BLocs/auth_bloc/auth_event.dart';
-import 'package:crushly/BLocs/auth_bloc/auth_state.dart';
-import 'package:crushly/Screens/auth/singup/school_choice_view.dart';
-import 'package:crushly/SharedPref/SharedPref.dart';
-import 'package:crushly/models/University.dart';
-import 'package:crushly/models/User.dart';
-import 'package:crushly/models/upload_photo.dart';
-import 'package:crushly/utils/constants.dart';
+import '../../resources/Api.dart';
+import 'auth_event.dart';
+import 'auth_state.dart';
+import '../../SharedPref/SharedPref.dart';
+import '../../models/University.dart';
+import '../../models/User.dart';
+import '../../models/upload_photo.dart';
+import '../../utils/constants.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:multi_image_picker2/multi_image_picker2.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
@@ -29,8 +26,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   String greekHouse = '';
   String interestedGender = '';
   int primaryPhotoIndex = 0;
-  Position position;
+  late Position position;
   List<Asset> photos = [];
+
+  AuthBloc(AuthState initialState) : super(AuthInitialState());
 
   @override
   AuthState get initialState => AuthInitialState();
@@ -80,9 +79,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     else if (event is ResetSignUpError)
       yield SignUpState.initial();
     else if (event is LoginInitiated)
-      yield* mapLoginInitiated(event, state);
+      yield* mapLoginInitiated(event, state as SignInState);
     else if (event is SignUpInitiated)
-      yield* mapSignUpInitiated(event, state);
+      yield* mapSignUpInitiated(event, state as SignUpState);
     else if (event is GetLocation)
       yield* mapGetLocation(event);
     else if (event is GetSignInInitialState)
@@ -165,19 +164,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         yield state.rebuild((b) => b..signingIn = true);
         String token;
-        final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-        _firebaseMessaging.configure(
-          onMessage: (Map<String, dynamic> message) async {
-            print("onMessage: $message");
-          },
-          onLaunch: (Map<String, dynamic> message) async {
-            print("onLaunch: $message");
-          },
-          onResume: (Map<String, dynamic> message) async {
-            print("onResume: $message");
-          },
-        );
-        token = await _firebaseMessaging.getToken();
+        final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+        // _firebaseMessaging.configure(
+        //   onMessage: (Map<String, dynamic> message) async {
+        //     print("onMessage: $message");
+        //   },
+        //   onLaunch: (Map<String, dynamic> message) async {
+        //     print("onLaunch: $message");
+        //   },
+        //   onResume: (Map<String, dynamic> message) async {
+        //     print("onResume: $message");
+        //   },
+        // );
+        token = (await _firebaseMessaging.getAPNSToken())!;
         User user;
         user = await Api.apiClient.loginUser(
           email: email,
@@ -259,20 +258,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         yield state.rebuild((b) => b..signingUp = true);
         String token;
-        final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-        _firebaseMessaging.configure(
-          onMessage: (Map<String, dynamic> message) async {
-            print("onMessage: $message");
-          },
-          onLaunch: (Map<String, dynamic> message) async {
-            print("onLaunch: $message");
-          },
-          onResume: (Map<String, dynamic> message) async {
-            print("onResume: $message");
-          },
-        );
+        final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+        // _firebaseMessaging.configure(
+        //   onMessage: (Map<String, dynamic> message) async {
+        //     print("onMessage: $message");
+        //   },
+        //   onLaunch: (Map<String, dynamic> message) async {
+        //     print("onLaunch: $message");
+        //   },
+        //   onResume: (Map<String, dynamic> message) async {
+        //     print("onResume: $message");
+        //   },
+        // );
 
-        token = await _firebaseMessaging.getToken();
+        token = (await _firebaseMessaging.getToken())!;
         User user;
         final date = DateFormat('MM-dd-yyyy').parse(birthDate);
         print('date is $date');

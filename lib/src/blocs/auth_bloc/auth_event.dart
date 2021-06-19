@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
 
 abstract class AuthEvent {}
 
@@ -36,8 +34,8 @@ class LoginInitiated extends AuthEvent {
   final String password;
 
   LoginInitiated({
-    this.email,
-    this.password,
+    required this.email,
+    required this.password,
   });
 }
 
@@ -55,17 +53,17 @@ class SignUpInitiated extends AuthEvent {
   final List<String> photos;
 
   SignUpInitiated({
-    this.email,
-    this.gender,
-    this.lastName,
-    this.password,
-    this.firstName,
-    this.birthDate,
-    this.schoolType,
-    this.schoolName,
-    this.primaryPhoto,
-    this.interestedGender,
-    this.photos,
+    required this.email,
+    required this.gender,
+    required this.lastName,
+    required this.password,
+    required this.firstName,
+    required this.birthDate,
+    required this.schoolType,
+    required this.schoolName,
+    required this.primaryPhoto,
+    required this.interestedGender,
+    required this.photos,
   });
 }
 
