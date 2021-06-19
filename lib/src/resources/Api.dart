@@ -194,7 +194,7 @@ class Api {
     }
   }
 
-  Future<User> loginUser({String email, String password, String token}) async {
+  Future<User> loginUser({required String email, required String password, required String token}) async {
     Map<String, dynamic> data = {};
     print('firebase token $token');
     if (token != null) {
@@ -238,56 +238,56 @@ class Api {
 
   // create new user
   Future<User> newUser({
-    String firstName,
-    String lastName,
-    String email,
-    String greekHouse,
-    University university,
-    String gender,
-    String interestedIn,
-    String token,
-    String password,
-    String dateOfBirth,
-    double lat,
-    double lng,
+    required String firstName,
+    String? lastName,
+    required String email,
+    String? greekHouse,
+    University? university,
+    String? gender,
+    String? interestedIn,
+    String? token,
+    String? password,
+    String? dateOfBirth,
+    double? lat,
+    double? lng,
   }) async {
     print('date is date $dateOfBirth');
     Map<String, dynamic> data = {};
     if (token != null) {
       data = {
         "firstName": firstName.toLowerCase(),
-        "lastName": lastName.toLowerCase(),
+        "lastName": lastName!.toLowerCase(),
         "email": email.toLowerCase(),
-        "gender": checkGender(gender.toLowerCase()),
-        "intrestedIn": checkGender(interestedIn.toLowerCase()),
+        "gender": checkGender(gender!.toLowerCase()),
+        "intrestedIn": checkGender(interestedIn!.toLowerCase()),
         "deviceToken": token.toLowerCase(),
         "dob": dateOfBirth,
-        "password": password.toLowerCase(),
+        "password": password!.toLowerCase(),
       };
     } else {
       data = {
         "firstName": firstName.toLowerCase(),
-        "lastName": lastName.toLowerCase(),
+        "lastName": lastName!.toLowerCase(),
         "email": email.toLowerCase(),
-        "gender": checkGender(gender.toLowerCase()),
-        "intrestedIn": checkGender(interestedIn.toLowerCase()),
+        "gender": checkGender(gender!.toLowerCase()),
+        "intrestedIn": checkGender(interestedIn!.toLowerCase()),
         "deviceToken": "none",
         "dob": dateOfBirth,
-        "password": password.toLowerCase(),
+        "password": password!.toLowerCase(),
       };
     }
     if (university != null) {
       data.addAll({
-        "university": university == null ? null : university.name.toLowerCase(),
+        "university": university == null ? null : university.name!.toLowerCase(),
         "placeId": university == null || null == university.placeId
             ? "0"
             : university.placeId,
         "uniLng": university == null || null == university.lng
             ? "0"
-            : university.lng.toDouble().toString(),
+            : university.lng!.toDouble().toString(),
         "uniLat": university == null || null == university.lat
             ? "0"
-            : university.lat.toDouble().toString(),
+            : university.lat!.toDouble().toString(),
       });
     }
     if (greekHouse != null && greekHouse.isNotEmpty)
@@ -390,7 +390,7 @@ class Api {
     return file;
   }
 
-  Future<List<String>> setPhotos(List<UploadPhoto> uploadPhotos) async {
+  Future<List<String>?> setPhotos(List<UploadPhoto> uploadPhotos) async {
     final List<String> imagesURLs = [];
     Map<String, String> mapBody = {};
     Map<String, UploadPhoto> imagesBody = {};
@@ -407,12 +407,12 @@ class Api {
         print("Heic type cached");
         File image = await getImageFileFromAssets(uploadPhoto.image);
         print('path is ${image.path}');
-        String jpgVersion =
+        String? jpgVersion =
             await HeicToJpg.convert(image.path).catchError((err) {
           print('Error is : $err');
         });
         print("Heic format converted to JPG, $jpgVersion");
-        uploadPhoto.image = File(jpgVersion);
+        uploadPhoto.image = File(jpgVersion!);
         print('Converted upload photo is: ${uploadPhoto.image}');
       }
       mapBody['${uploadPhoto.index}'] = 'image/$extension';
@@ -444,7 +444,7 @@ class Api {
           for (BasePhoto basePhoto in photosList) {
             print('sending data extension ${mapBody['${basePhoto.number}']}');
             final buffer =
-                (await imagesBody['${basePhoto.number}'].image.getByteData())
+                (await imagesBody['${basePhoto.number}']!.image.getByteData())
                     .buffer
                     .asUint8List();
 
@@ -519,7 +519,7 @@ class Api {
                 body: {"profilePhoto": baseResponse.key});
             print(patchResponse.statusCode);
             print(patchResponse.body);
-            return User.fromJson(jsonDecode(patchResponse.body)).profilePhoto;
+            return User.fromJson(jsonDecode(patchResponse.body)).profilePhoto!;
           }
         } else {
           return Future.error("Error"); //this must chang
@@ -740,7 +740,7 @@ class Api {
 
       final json = jsonDecode(response.body);
 
-      final List<Message> messages = (json['queues']['messageQueue'] as List)
+      final List<Message?>? messages = (json['queues']['messageQueue'] as List)
           ?.map((e) => e == null
               ? null
               : Message(
@@ -751,7 +751,7 @@ class Api {
                   (e as Map<String, dynamic>)["author"],
                   (e as Map<String, dynamic>)["reciever"]))
           ?.toList();
-      final List<User> followees = (json['queues']['followeeQueue'] as List)
+      final List<User?>? followees = (json['queues']['followeeQueue'] as List)
           ?.map((e) => e == null
               ? null
               : User(
@@ -766,7 +766,7 @@ class Api {
                   thumbnail: (e as Map<String, dynamic>)["thumbnail"],
                   notify: (e as Map<String, dynamic>)["notify"]))
           ?.toList();
-      final List<User> revealList = (json['queues']['revealQueue'] as List)
+      final List<User?>? revealList = (json['queues']['revealQueue'] as List)
           ?.map((e) => e == null
               ? null
               : User(
@@ -782,11 +782,11 @@ class Api {
                   thumbnail: (e as Map<String, dynamic>)["thumbnail"],
                   notify: (e as Map<String, dynamic>)["notify"]))
           ?.toList();
-      final List<User> blockedList = (json['queues']['blockedByQueue'] as List)
+      final List<User?>? blockedList = (json['queues']['blockedByQueue'] as List)
           ?.map((e) =>
               e == null ? null : User(id: (e as Map<String, dynamic>)['_id']))
           ?.toList();
-      final List<User> dateList = (json['queues']['dateQueue'] as List)
+      final List<User?>? dateList = (json['queues']['dateQueue'] as List)
           ?.map((e) => e == null
               ? null
               : User(
@@ -835,7 +835,7 @@ class Api {
         print(response.body);
         final baseResponse = BasePhoto.fromJson(jsonDecode(response.body));
         if (baseResponse.url != null) {
-          final http.Response d = await _httpClient.put(baseResponse.url,
+          final http.Response d = await _httpClient.put(Uri.parse(baseResponse.url),
               headers: {"Content-Type": "image/$extention"},
               body: imageData.buffer.asUint8List());
 
@@ -1088,7 +1088,7 @@ class Api {
     }
   }
 
-  Future<List<User>> inListSearch(int listNum, int page, String query) async {
+  Future<List<User>?> inListSearch(int listNum, int page, String query) async {
     print("page : $page");
     try {
       final user = await SharedPref.pref.getUser();
@@ -1125,7 +1125,7 @@ class Api {
     }
   }
 
-  Future<List<NickName>> getNickNames(int amount) async {
+  Future<List<NickName?>?> getNickNames(int amount) async {
     try {
       final response =
           await _httpClient.get(Uri.parse("https://uinames.com/api/?amount=$amount"));
@@ -1272,10 +1272,10 @@ class Api {
     }
   }
 
-  Future<User> postSetNewPassword(email, otp, password) async {
+  Future<User?> postSetNewPassword(email, otp, password) async {
     //check if email is exist
-    final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-    String token = await _firebaseMessaging.getToken();
+    final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+    String? token = await _firebaseMessaging.getAPNSToken();
     Map<String, dynamic> data = {
       "email": email,
       "otp": otp,

@@ -10,107 +10,77 @@ part 'User.g.dart';
 @JsonSerializable()
 @CustomDateTimeConverter()
 class User {
-  @JsonKey(nullable: true)
-  final List<User> followList;
-  @JsonKey(nullable: true)
-  final String partnerId;
-  @JsonKey(nullable: true)
-  final List<User> dateList;
-  @JsonKey(nullable: true)
-  final List<String> images;
-  @JsonKey(nullable: true)
-  final List<BasePhoto> photos;
-  @JsonKey(nullable: true)
-  final List<FollowResponse> myfollowees;
-  @JsonKey(nullable: true)
-  final List<RingOffered> ringsOffered;
-  @JsonKey(nullable: true)
-  final List<RingOffered> ringsHolding;
-  @JsonKey(nullable: true)
-  final DateTime createdAt;
+  final List<User>? followList;
+  final String? partnerId;
+  final List<User>? dateList;
+  final List<String>? images;
+  final List<BasePhoto>? photos;
+  final List<FollowResponse>? myfollowees;
+  final List<RingOffered>? ringsOffered;
+  final List<RingOffered>? ringsHolding;
+  final DateTime? createdAt;
   @JsonKey(name: "_id")
   String id;
-  @JsonKey(nullable: true)
-  final String name;
-  @JsonKey(nullable: true)
-  final String email;
-  @JsonKey(nullable: true)
-  String gender;
-  @JsonKey(nullable: true)
-  final String schoolName;
-  @JsonKey(nullable: true)
-  final String university;
-  @JsonKey(nullable: true)
-  final String greekHouse;
+  final String? name;
+  final String? email;
+  String? gender;
+  final String? schoolName;
+  final String? university;
+  final String? greekHouse;
   @JsonKey(nullable: true, name: 'dob')
-  final String birthday;
-  @JsonKey(nullable: true)
-  final int followCount;
-  @JsonKey(nullable: true)
-  final int relation;
-  @JsonKey(nullable: true)
-  String profilePhoto;
-  @JsonKey(nullable: true)
-  final String thumbnail;
-  @JsonKey(nullable: true)
-  final String revealTime;
-  @JsonKey(nullable: true)
-  final String jwtToken;
-  @JsonKey(nullable: true)
-  final String nickName;
-  @JsonKey(nullable: true)
-  final String languages;
-  @JsonKey(nullable: true)
-  bool presentlySecret;
+  final String? birthday;
+  final int? followCount;
+  final int? relation;
+  String? profilePhoto;
+  final String? thumbnail;
+  final String? revealTime;
+  final String? jwtToken;
+  final String? nickName;
+  final String? languages;
+  bool? presentlySecret;
   @JsonKey(nullable: true, name: 'intrestedIn')
-  String interestedIn;
-  @JsonKey(nullable: true)
-  final bool hasRing;
-  @JsonKey(nullable: true)
-  bool orignallySecret;
-  @JsonKey(nullable: true)
-  final List<Story> myfeed;
-  @JsonKey(nullable: true)
-  final bool notify;
-  @JsonKey(nullable: true)
-  bool isSecretCrush;
-  @JsonKey(nullable: true)
-  bool isCrush;
+  String? interestedIn;
+  final bool? hasRing;
+  bool? orignallySecret;
+  final List<Story>? myfeed;
+  final bool? notify;
+  bool? isSecretCrush;
+  bool? isCrush;
 
   User({
-    required this.partnerId,
-    required this.dateList,
-    required this.followCount,
-    required this.orignallySecret,
-    required this.presentlySecret,
-    required this.followList,
-    required this.photos,
-    required this.hasRing,
-    required this.images,
+    this.partnerId,
+    this.dateList,
+    this.followCount,
+    this.orignallySecret,
+    this.presentlySecret,
+    this.followList,
+    this.photos,
+    this.hasRing,
+    this.images,
     required this.id,
-    required this.nickName,
-    required this.revealTime,
-    required this.notify,
-    required this.myfeed,
-    required this.gender,
-    required this.languages,
-    required this.schoolName,
-    required this.university,
-    required this.name,
-    required this.birthday,
-    required this.email,
-    required this.thumbnail,
-    required this.createdAt,
-    required this.isCrush,
-    required this.profilePhoto,
-    required this.jwtToken,
-    required this.isSecretCrush,
-    required this.relation,
-    required this.ringsHolding,
-    required this.interestedIn,
-    required this.ringsOffered,
-    required this.myfollowees,
-    required this.greekHouse,
+    this.nickName,
+    this.revealTime,
+    this.notify,
+    this.myfeed,
+    this.gender,
+    this.languages,
+    this.schoolName,
+    this.university,
+    this.name,
+    this.birthday,
+    this.email,
+    this.thumbnail,
+    this.createdAt,
+    this.isCrush,
+    this.profilePhoto,
+    this.jwtToken,
+    this.isSecretCrush,
+    this.relation,
+    this.ringsHolding,
+    this.interestedIn,
+    this.ringsOffered,
+    this.myfollowees,
+    this.greekHouse,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

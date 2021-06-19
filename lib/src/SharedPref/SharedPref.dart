@@ -1,4 +1,4 @@
-import '../models/user.dart';
+import '../models/User.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPref {
@@ -19,7 +19,7 @@ class SharedPref {
     final SharedPreferences? p = await _getSharedPref;
     p!.setString("id", user.id);
     p.setString("name",user.name!);
-    p.setString("profilePhoto", user.profilePic!);
+    p.setString("profilePhoto", user.profilePhoto!);
   }
 
   Future<void> daleteUser() async {
@@ -45,5 +45,33 @@ class SharedPref {
     } catch (e) {
       return null;
     }
+  }
+
+  Future<void> setImagesUploaded() async {
+    final SharedPreferences? p = await _getSharedPref;
+    p!.setBool('is_images_uploaded', true);
+    return;
+  }
+
+  Future<bool> getIsImagesUploaded() async {
+    final SharedPreferences? p = await _getSharedPref;
+    return p!.getBool('is_images_uploaded')!;
+  }
+
+
+  Future<String ?> getMyId() async {
+    final SharedPreferences? sharedPreferences = await _getSharedPref;
+    return sharedPreferences!.getString('id');
+  }
+
+  Future<void> setIntroShown(bool _isShown) async {
+    final SharedPreferences? p = await _getSharedPref;
+    p!.setBool('is_intro_shown', _isShown);
+  }
+
+  Future<bool> getIntroShown() async {
+    final SharedPreferences? p = await _getSharedPref;
+    bool isShown = p!.getBool('is_intro_shown')!;
+    return null != isShown && isShown;
   }
 }
