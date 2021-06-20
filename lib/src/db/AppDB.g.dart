@@ -8,7 +8,7 @@ part of 'AppDB.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_this
 class LocalMessage extends DataClass implements Insertable<LocalMessage> {
-  final int id;
+  final int? id;
   final String message;
   final String createdAt;
   final bool isMine;
@@ -16,7 +16,7 @@ class LocalMessage extends DataClass implements Insertable<LocalMessage> {
   final String? receiverId;
   final String? authorId;
   LocalMessage(
-      {required this.id,
+      {this.id,
       required this.message,
       required this.createdAt,
       required this.isMine,
@@ -27,8 +27,7 @@ class LocalMessage extends DataClass implements Insertable<LocalMessage> {
       {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return LocalMessage(
-      id: const IntType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
+      id: const IntType().mapFromDatabaseResponse(data['${effectivePrefix}id']),
       message: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}message'])!,
       createdAt: const StringType()
@@ -46,7 +45,9 @@ class LocalMessage extends DataClass implements Insertable<LocalMessage> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || id != null) {
+      map['id'] = Variable<int?>(id);
+    }
     map['message'] = Variable<String>(message);
     map['created_at'] = Variable<String>(createdAt);
     map['is_mine'] = Variable<bool>(isMine);
@@ -62,7 +63,7 @@ class LocalMessage extends DataClass implements Insertable<LocalMessage> {
 
   LocalMessagesCompanion toCompanion(bool nullToAbsent) {
     return LocalMessagesCompanion(
-      id: Value(id),
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
       message: Value(message),
       createdAt: Value(createdAt),
       isMine: Value(isMine),
@@ -80,7 +81,7 @@ class LocalMessage extends DataClass implements Insertable<LocalMessage> {
       {ValueSerializer? serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return LocalMessage(
-      id: serializer.fromJson<int>(json['id']),
+      id: serializer.fromJson<int?>(json['id']),
       message: serializer.fromJson<String>(json['message']),
       createdAt: serializer.fromJson<String>(json['createdAt']),
       isMine: serializer.fromJson<bool>(json['isMine']),
@@ -93,7 +94,7 @@ class LocalMessage extends DataClass implements Insertable<LocalMessage> {
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
+      'id': serializer.toJson<int?>(id),
       'message': serializer.toJson<String>(message),
       'createdAt': serializer.toJson<String>(createdAt),
       'isMine': serializer.toJson<bool>(isMine),
@@ -159,7 +160,7 @@ class LocalMessage extends DataClass implements Insertable<LocalMessage> {
 }
 
 class LocalMessagesCompanion extends UpdateCompanion<LocalMessage> {
-  final Value<int> id;
+  final Value<int?> id;
   final Value<String> message;
   final Value<String> createdAt;
   final Value<bool> isMine;
@@ -186,7 +187,7 @@ class LocalMessagesCompanion extends UpdateCompanion<LocalMessage> {
   })  : message = Value(message),
         createdAt = Value(createdAt);
   static Insertable<LocalMessage> custom({
-    Expression<int>? id,
+    Expression<int?>? id,
     Expression<String>? message,
     Expression<String>? createdAt,
     Expression<bool>? isMine,
@@ -206,7 +207,7 @@ class LocalMessagesCompanion extends UpdateCompanion<LocalMessage> {
   }
 
   LocalMessagesCompanion copyWith(
-      {Value<int>? id,
+      {Value<int?>? id,
       Value<String>? message,
       Value<String>? createdAt,
       Value<bool>? isMine,
@@ -228,7 +229,7 @@ class LocalMessagesCompanion extends UpdateCompanion<LocalMessage> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     if (id.present) {
-      map['id'] = Variable<int>(id.value);
+      map['id'] = Variable<int?>(id.value);
     }
     if (message.present) {
       map['message'] = Variable<String>(message.value);
@@ -275,7 +276,7 @@ class $LocalMessagesTable extends LocalMessages
   @override
   late final GeneratedIntColumn id = _constructId();
   GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn('id', $tableName, false,
+    return GeneratedIntColumn('id', $tableName, true,
         hasAutoIncrement: true, declaredAsPrimaryKey: true);
   }
 
@@ -408,27 +409,27 @@ class LocalUser extends DataClass implements Insertable<LocalUser> {
   final String? name;
   final String? image;
   final String? nameBeforeReaveal;
-  final bool revealed;
+  final bool? revealed;
   final int? lastMessage;
   final DateTime? updatedAt;
   final int? numOfUnRead;
   final int? relation;
   final bool orginalySecret;
   final bool presentlySecret;
-  final bool notify;
+  final bool? notify;
   LocalUser(
       {required this.id,
       this.name,
       this.image,
       this.nameBeforeReaveal,
-      required this.revealed,
+      this.revealed,
       this.lastMessage,
       this.updatedAt,
       this.numOfUnRead,
       this.relation,
       required this.orginalySecret,
       required this.presentlySecret,
-      required this.notify});
+      this.notify});
   factory LocalUser.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -442,7 +443,7 @@ class LocalUser extends DataClass implements Insertable<LocalUser> {
       nameBeforeReaveal: const StringType().mapFromDatabaseResponse(
           data['${effectivePrefix}name_before_reaveal']),
       revealed: const BoolType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}revealed'])!,
+          .mapFromDatabaseResponse(data['${effectivePrefix}revealed']),
       lastMessage: const IntType()
           .mapFromDatabaseResponse(data['${effectivePrefix}last_message']),
       updatedAt: const DateTimeType()
@@ -456,7 +457,7 @@ class LocalUser extends DataClass implements Insertable<LocalUser> {
       presentlySecret: const BoolType()
           .mapFromDatabaseResponse(data['${effectivePrefix}presently_secret'])!,
       notify: const BoolType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}notify'])!,
+          .mapFromDatabaseResponse(data['${effectivePrefix}notify']),
     );
   }
   @override
@@ -472,7 +473,9 @@ class LocalUser extends DataClass implements Insertable<LocalUser> {
     if (!nullToAbsent || nameBeforeReaveal != null) {
       map['name_before_reaveal'] = Variable<String?>(nameBeforeReaveal);
     }
-    map['revealed'] = Variable<bool>(revealed);
+    if (!nullToAbsent || revealed != null) {
+      map['revealed'] = Variable<bool?>(revealed);
+    }
     if (!nullToAbsent || lastMessage != null) {
       map['last_message'] = Variable<int?>(lastMessage);
     }
@@ -487,7 +490,9 @@ class LocalUser extends DataClass implements Insertable<LocalUser> {
     }
     map['orginaly_secret'] = Variable<bool>(orginalySecret);
     map['presently_secret'] = Variable<bool>(presentlySecret);
-    map['notify'] = Variable<bool>(notify);
+    if (!nullToAbsent || notify != null) {
+      map['notify'] = Variable<bool?>(notify);
+    }
     return map;
   }
 
@@ -500,7 +505,9 @@ class LocalUser extends DataClass implements Insertable<LocalUser> {
       nameBeforeReaveal: nameBeforeReaveal == null && nullToAbsent
           ? const Value.absent()
           : Value(nameBeforeReaveal),
-      revealed: Value(revealed),
+      revealed: revealed == null && nullToAbsent
+          ? const Value.absent()
+          : Value(revealed),
       lastMessage: lastMessage == null && nullToAbsent
           ? const Value.absent()
           : Value(lastMessage),
@@ -515,7 +522,8 @@ class LocalUser extends DataClass implements Insertable<LocalUser> {
           : Value(relation),
       orginalySecret: Value(orginalySecret),
       presentlySecret: Value(presentlySecret),
-      notify: Value(notify),
+      notify:
+          notify == null && nullToAbsent ? const Value.absent() : Value(notify),
     );
   }
 
@@ -528,14 +536,14 @@ class LocalUser extends DataClass implements Insertable<LocalUser> {
       image: serializer.fromJson<String?>(json['image']),
       nameBeforeReaveal:
           serializer.fromJson<String?>(json['nameBeforeReaveal']),
-      revealed: serializer.fromJson<bool>(json['revealed']),
+      revealed: serializer.fromJson<bool?>(json['revealed']),
       lastMessage: serializer.fromJson<int?>(json['lastMessage']),
       updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
       numOfUnRead: serializer.fromJson<int?>(json['numOfUnRead']),
       relation: serializer.fromJson<int?>(json['relation']),
       orginalySecret: serializer.fromJson<bool>(json['orginalySecret']),
       presentlySecret: serializer.fromJson<bool>(json['presentlySecret']),
-      notify: serializer.fromJson<bool>(json['notify']),
+      notify: serializer.fromJson<bool?>(json['notify']),
     );
   }
   @override
@@ -546,14 +554,14 @@ class LocalUser extends DataClass implements Insertable<LocalUser> {
       'name': serializer.toJson<String?>(name),
       'image': serializer.toJson<String?>(image),
       'nameBeforeReaveal': serializer.toJson<String?>(nameBeforeReaveal),
-      'revealed': serializer.toJson<bool>(revealed),
+      'revealed': serializer.toJson<bool?>(revealed),
       'lastMessage': serializer.toJson<int?>(lastMessage),
       'updatedAt': serializer.toJson<DateTime?>(updatedAt),
       'numOfUnRead': serializer.toJson<int?>(numOfUnRead),
       'relation': serializer.toJson<int?>(relation),
       'orginalySecret': serializer.toJson<bool>(orginalySecret),
       'presentlySecret': serializer.toJson<bool>(presentlySecret),
-      'notify': serializer.toJson<bool>(notify),
+      'notify': serializer.toJson<bool?>(notify),
     };
   }
 
@@ -649,14 +657,14 @@ class LocalUsersCompanion extends UpdateCompanion<LocalUser> {
   final Value<String?> name;
   final Value<String?> image;
   final Value<String?> nameBeforeReaveal;
-  final Value<bool> revealed;
+  final Value<bool?> revealed;
   final Value<int?> lastMessage;
   final Value<DateTime?> updatedAt;
   final Value<int?> numOfUnRead;
   final Value<int?> relation;
   final Value<bool> orginalySecret;
   final Value<bool> presentlySecret;
-  final Value<bool> notify;
+  final Value<bool?> notify;
   const LocalUsersCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
@@ -690,14 +698,14 @@ class LocalUsersCompanion extends UpdateCompanion<LocalUser> {
     Expression<String?>? name,
     Expression<String?>? image,
     Expression<String?>? nameBeforeReaveal,
-    Expression<bool>? revealed,
+    Expression<bool?>? revealed,
     Expression<int?>? lastMessage,
     Expression<DateTime?>? updatedAt,
     Expression<int?>? numOfUnRead,
     Expression<int?>? relation,
     Expression<bool>? orginalySecret,
     Expression<bool>? presentlySecret,
-    Expression<bool>? notify,
+    Expression<bool?>? notify,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -720,14 +728,14 @@ class LocalUsersCompanion extends UpdateCompanion<LocalUser> {
       Value<String?>? name,
       Value<String?>? image,
       Value<String?>? nameBeforeReaveal,
-      Value<bool>? revealed,
+      Value<bool?>? revealed,
       Value<int?>? lastMessage,
       Value<DateTime?>? updatedAt,
       Value<int?>? numOfUnRead,
       Value<int?>? relation,
       Value<bool>? orginalySecret,
       Value<bool>? presentlySecret,
-      Value<bool>? notify}) {
+      Value<bool?>? notify}) {
     return LocalUsersCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -760,7 +768,7 @@ class LocalUsersCompanion extends UpdateCompanion<LocalUser> {
       map['name_before_reaveal'] = Variable<String?>(nameBeforeReaveal.value);
     }
     if (revealed.present) {
-      map['revealed'] = Variable<bool>(revealed.value);
+      map['revealed'] = Variable<bool?>(revealed.value);
     }
     if (lastMessage.present) {
       map['last_message'] = Variable<int?>(lastMessage.value);
@@ -781,7 +789,7 @@ class LocalUsersCompanion extends UpdateCompanion<LocalUser> {
       map['presently_secret'] = Variable<bool>(presentlySecret.value);
     }
     if (notify.present) {
-      map['notify'] = Variable<bool>(notify.value);
+      map['notify'] = Variable<bool?>(notify.value);
     }
     return map;
   }
@@ -861,7 +869,7 @@ class $LocalUsersTable extends LocalUsers
   @override
   late final GeneratedBoolColumn revealed = _constructRevealed();
   GeneratedBoolColumn _constructRevealed() {
-    return GeneratedBoolColumn('revealed', $tableName, false,
+    return GeneratedBoolColumn('revealed', $tableName, true,
         defaultValue: Constant(false));
   }
 
@@ -933,7 +941,7 @@ class $LocalUsersTable extends LocalUsers
   @override
   late final GeneratedBoolColumn notify = _constructNotify();
   GeneratedBoolColumn _constructNotify() {
-    return GeneratedBoolColumn('notify', $tableName, false,
+    return GeneratedBoolColumn('notify', $tableName, true,
         defaultValue: Constant(false));
   }
 
@@ -2176,29 +2184,29 @@ class $NotificationsTable extends Notifications
 }
 
 class LocalStory extends DataClass implements Insertable<LocalStory> {
-  final int localId;
+  final int? localId;
   final String id;
   final String authorId;
   final String url;
   final String storyText;
   final String authorName;
   final String createdAt;
-  final bool private;
+  final bool? private;
   LocalStory(
-      {required this.localId,
+      {this.localId,
       required this.id,
       required this.authorId,
       required this.url,
       required this.storyText,
       required this.authorName,
       required this.createdAt,
-      required this.private});
+      this.private});
   factory LocalStory.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return LocalStory(
       localId: const IntType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}local_id'])!,
+          .mapFromDatabaseResponse(data['${effectivePrefix}local_id']),
       id: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
       authorId: const StringType()
@@ -2212,33 +2220,41 @@ class LocalStory extends DataClass implements Insertable<LocalStory> {
       createdAt: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}created_at'])!,
       private: const BoolType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}private'])!,
+          .mapFromDatabaseResponse(data['${effectivePrefix}private']),
     );
   }
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['local_id'] = Variable<int>(localId);
+    if (!nullToAbsent || localId != null) {
+      map['local_id'] = Variable<int?>(localId);
+    }
     map['id'] = Variable<String>(id);
     map['author_id'] = Variable<String>(authorId);
     map['url'] = Variable<String>(url);
     map['story_text'] = Variable<String>(storyText);
     map['author_name'] = Variable<String>(authorName);
     map['created_at'] = Variable<String>(createdAt);
-    map['private'] = Variable<bool>(private);
+    if (!nullToAbsent || private != null) {
+      map['private'] = Variable<bool?>(private);
+    }
     return map;
   }
 
   LocalStorysCompanion toCompanion(bool nullToAbsent) {
     return LocalStorysCompanion(
-      localId: Value(localId),
+      localId: localId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(localId),
       id: Value(id),
       authorId: Value(authorId),
       url: Value(url),
       storyText: Value(storyText),
       authorName: Value(authorName),
       createdAt: Value(createdAt),
-      private: Value(private),
+      private: private == null && nullToAbsent
+          ? const Value.absent()
+          : Value(private),
     );
   }
 
@@ -2246,28 +2262,28 @@ class LocalStory extends DataClass implements Insertable<LocalStory> {
       {ValueSerializer? serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return LocalStory(
-      localId: serializer.fromJson<int>(json['localId']),
+      localId: serializer.fromJson<int?>(json['localId']),
       id: serializer.fromJson<String>(json['id']),
       authorId: serializer.fromJson<String>(json['authorId']),
       url: serializer.fromJson<String>(json['url']),
       storyText: serializer.fromJson<String>(json['storyText']),
       authorName: serializer.fromJson<String>(json['authorName']),
       createdAt: serializer.fromJson<String>(json['createdAt']),
-      private: serializer.fromJson<bool>(json['private']),
+      private: serializer.fromJson<bool?>(json['private']),
     );
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'localId': serializer.toJson<int>(localId),
+      'localId': serializer.toJson<int?>(localId),
       'id': serializer.toJson<String>(id),
       'authorId': serializer.toJson<String>(authorId),
       'url': serializer.toJson<String>(url),
       'storyText': serializer.toJson<String>(storyText),
       'authorName': serializer.toJson<String>(authorName),
       'createdAt': serializer.toJson<String>(createdAt),
-      'private': serializer.toJson<bool>(private),
+      'private': serializer.toJson<bool?>(private),
     };
   }
 
@@ -2333,14 +2349,14 @@ class LocalStory extends DataClass implements Insertable<LocalStory> {
 }
 
 class LocalStorysCompanion extends UpdateCompanion<LocalStory> {
-  final Value<int> localId;
+  final Value<int?> localId;
   final Value<String> id;
   final Value<String> authorId;
   final Value<String> url;
   final Value<String> storyText;
   final Value<String> authorName;
   final Value<String> createdAt;
-  final Value<bool> private;
+  final Value<bool?> private;
   const LocalStorysCompanion({
     this.localId = const Value.absent(),
     this.id = const Value.absent(),
@@ -2367,14 +2383,14 @@ class LocalStorysCompanion extends UpdateCompanion<LocalStory> {
         authorName = Value(authorName),
         createdAt = Value(createdAt);
   static Insertable<LocalStory> custom({
-    Expression<int>? localId,
+    Expression<int?>? localId,
     Expression<String>? id,
     Expression<String>? authorId,
     Expression<String>? url,
     Expression<String>? storyText,
     Expression<String>? authorName,
     Expression<String>? createdAt,
-    Expression<bool>? private,
+    Expression<bool?>? private,
   }) {
     return RawValuesInsertable({
       if (localId != null) 'local_id': localId,
@@ -2389,14 +2405,14 @@ class LocalStorysCompanion extends UpdateCompanion<LocalStory> {
   }
 
   LocalStorysCompanion copyWith(
-      {Value<int>? localId,
+      {Value<int?>? localId,
       Value<String>? id,
       Value<String>? authorId,
       Value<String>? url,
       Value<String>? storyText,
       Value<String>? authorName,
       Value<String>? createdAt,
-      Value<bool>? private}) {
+      Value<bool?>? private}) {
     return LocalStorysCompanion(
       localId: localId ?? this.localId,
       id: id ?? this.id,
@@ -2413,7 +2429,7 @@ class LocalStorysCompanion extends UpdateCompanion<LocalStory> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     if (localId.present) {
-      map['local_id'] = Variable<int>(localId.value);
+      map['local_id'] = Variable<int?>(localId.value);
     }
     if (id.present) {
       map['id'] = Variable<String>(id.value);
@@ -2434,7 +2450,7 @@ class LocalStorysCompanion extends UpdateCompanion<LocalStory> {
       map['created_at'] = Variable<String>(createdAt.value);
     }
     if (private.present) {
-      map['private'] = Variable<bool>(private.value);
+      map['private'] = Variable<bool?>(private.value);
     }
     return map;
   }
@@ -2464,7 +2480,7 @@ class $LocalStorysTable extends LocalStorys
   @override
   late final GeneratedIntColumn localId = _constructLocalId();
   GeneratedIntColumn _constructLocalId() {
-    return GeneratedIntColumn('local_id', $tableName, false,
+    return GeneratedIntColumn('local_id', $tableName, true,
         hasAutoIncrement: true, declaredAsPrimaryKey: true);
   }
 
@@ -2538,7 +2554,7 @@ class $LocalStorysTable extends LocalStorys
   @override
   late final GeneratedBoolColumn private = _constructPrivate();
   GeneratedBoolColumn _constructPrivate() {
-    return GeneratedBoolColumn('private', $tableName, false,
+    return GeneratedBoolColumn('private', $tableName, true,
         defaultValue: Constant(false));
   }
 

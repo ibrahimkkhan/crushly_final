@@ -238,9 +238,9 @@ class Api {
 
   // create new user
   Future<User> newUser({
-    required String firstName,
+    String? firstName,
     String? lastName,
-    required String email,
+    String? email,
     String? greekHouse,
     University? university,
     String? gender,
@@ -255,9 +255,9 @@ class Api {
     Map<String, dynamic> data = {};
     if (token != null) {
       data = {
-        "firstName": firstName.toLowerCase(),
+        "firstName": firstName!.toLowerCase(),
         "lastName": lastName!.toLowerCase(),
-        "email": email.toLowerCase(),
+        "email": email!.toLowerCase(),
         "gender": checkGender(gender!.toLowerCase()),
         "intrestedIn": checkGender(interestedIn!.toLowerCase()),
         "deviceToken": token.toLowerCase(),
@@ -266,9 +266,9 @@ class Api {
       };
     } else {
       data = {
-        "firstName": firstName.toLowerCase(),
+        "firstName": firstName!.toLowerCase(),
         "lastName": lastName!.toLowerCase(),
-        "email": email.toLowerCase(),
+        "email": email!.toLowerCase(),
         "gender": checkGender(gender!.toLowerCase()),
         "intrestedIn": checkGender(interestedIn!.toLowerCase()),
         "deviceToken": "none",

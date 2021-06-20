@@ -3,7 +3,6 @@ import 'dart:core';
 
 import '../resources//Api.dart';
 import '../common/constants.dart';
-import '../SharedPref/SharedPref.dart';
 import '../models/Message.dart';
 import '../models/Story.dart';
 import '../models/User.dart';
@@ -12,7 +11,7 @@ import 'package:moor_flutter/moor_flutter.dart';
 part 'AppDB.g.dart';
 
 class LocalMessages extends Table {
-  IntColumn get id => integer().autoIncrement()();
+  IntColumn get id => integer().autoIncrement().nullable()();
 
   TextColumn get message => text()();
 
@@ -28,7 +27,7 @@ class LocalMessages extends Table {
 }
 
 class LocalStorys extends Table {
-  IntColumn get localId => integer().autoIncrement()();
+  IntColumn get localId => integer().autoIncrement().nullable()();
 
   TextColumn get id => text()();
 
@@ -42,7 +41,7 @@ class LocalStorys extends Table {
 
   TextColumn get createdAt => text()();
 
-  BoolColumn get private => boolean().withDefault(Constant(false))();
+  BoolColumn get private => boolean().withDefault(Constant(false)).nullable()();
 }
 
 class StoryUsers extends Table {
@@ -64,7 +63,7 @@ class LocalUsers extends Table {
 
   TextColumn get nameBeforeReaveal => text().nullable()();
 
-  BoolColumn get revealed => boolean().withDefault(Constant(false))();
+  BoolColumn get revealed => boolean().withDefault(Constant(false)).nullable()();
 
   IntColumn get lastMessage => integer().nullable()();
 
@@ -78,7 +77,7 @@ class LocalUsers extends Table {
 
   BoolColumn get presentlySecret => boolean().withDefault(Constant(false))();
 
-  BoolColumn get notify => boolean().withDefault(Constant(false))();
+  BoolColumn get notify => boolean().withDefault(Constant(false)).nullable()();
 }
 
 class BlockedUsers extends Table {
@@ -134,8 +133,8 @@ class UserWithMessage {
   final LocalMessage message;
 
   UserWithMessage({
-    @required this.message,
-    @required this.user,
+    required this.message,
+    required this.user,
   });
 }
 
@@ -144,8 +143,8 @@ class UserWithStory {
   final LocalStory story;
 
   UserWithStory({
-    @required this.story,
-    @required this.user,
+    required this.story,
+    required this.user,
   });
 }
 
@@ -169,10 +168,10 @@ class AppDataBase extends _$AppDataBase {
 
   recieveRevealCollection(List<User> users) async {
     for (User u in users) {
-      await revealIdetity(u.id, u.name, u.nickName, u.notify);
+      await revealIdetity(u.id, u.name!, u.nickName!, u.notify!);
       if (u.notify != null) {
-        if (u.notify) {
-          newNotification(u, "reveal", u.createdAt);
+        if (u.notify!) {
+          newNotification(u, "reveal", u.createdAt!);
         }
       }
     }
@@ -212,7 +211,7 @@ class AppDataBase extends _$AppDataBase {
           final newStoryId = await into(localStorys).insert(LocalStory(
             id: s.id,
             authorId: s.author.id,
-            authorName: s.author.name,
+            authorName: s.author.name!,
             url: s.url,
             storyText: s.text,
             createdAt: s.createdAt,
@@ -230,7 +229,7 @@ class AppDataBase extends _$AppDataBase {
             //i f user not exist
             await into(storyUsers).insert(StoryUser(
                 id: s.author.id,
-                name: s.author.name,
+                name: s.author.name!,
                 updatedAt: DateTime.now(),
                 lastStory: newStoryId));
           }
@@ -299,7 +298,7 @@ class AppDataBase extends _$AppDataBase {
             ..where((u) => u.id.equals(message.authorId)))
           .getSingle();
 
-      final int num = user.numOfUnRead == null ? 1 : user.numOfUnRead + 1;
+      final int num = user.numOfUnRead == null ? 1 : user.numOfUnRead! + 1;
 
       await (update(localUsers)..where((u) => u.id.equals(user.id))).write(
           LocalUsersCompanion(
@@ -315,8 +314,8 @@ class AppDataBase extends _$AppDataBase {
 
       final int num = localUser == null
           ? 1
-          : localUser.numOfUnRead == null ? 1 : localUser.numOfUnRead + 1;
-      final user = await Api.apiClient.relationWithOtherUser(message.authorId);
+          : localUser.numOfUnRead == null ? 1 : localUser.numOfUnRead! + 1;
+      final user = await Api.apiClient.relationWithOtherUser(message.authorId!);
       await addToLocalUsersIfUpsent(
         LocalUser(
           id: user.id,
@@ -403,17 +402,17 @@ class AppDataBase extends _$AppDataBase {
 //          orginalySecret: u.orignallySecret,
 //          presentlySecret: u.presentlySecret ?? u.orignallySecret));
       if (u.notify != null) {
-        if (u.notify) {
+        if (u.notify!) {
           switch (type) {
             case 'followee':
               newNotification(
-                  u, u.orignallySecret ? "followee" : "secret", u.createdAt);
+                  u, u.orignallySecret! ? "followee" : "secret", u.createdAt!);
               break;
             case 'reveal':
-              newNotification(u, "reveal", u.createdAt);
+              newNotification(u, "reveal", u.createdAt!);
               break;
             case 'date':
-              newNotification(u, "date", u.createdAt);
+              newNotification(u, "date", u.createdAt!);
               break;
           }
         }
@@ -424,12 +423,12 @@ class AppDataBase extends _$AppDataBase {
   newNotification(User user, String type, DateTime createdAt) async {
     print('current date is $createdAt');
     await into(notifications).insert(Notification(
-        userName: user.name,
+        userName: user.name!,
         createdAt: createdAt,
         userId: user.id,
         type: type,
         seen: false,
-        image: user.thumbnail));
+        image: user.thumbnail!));
   }
 
   Future<List<Notification>> getAllNotifications() async {
@@ -512,7 +511,7 @@ class AppDataBase extends _$AppDataBase {
     final lastMessageId = await into(localMessages).insert(message);
 
     bool isAbsent = await checkIfLocalUserAbsent(
-        isMine ? message.receiverId : message.authorId);
+        isMine ? message.receiverId! : message.authorId!);
     print('is Absent = $isAbsent');
     if (!isAbsent) {
       await (update(localUsers)
@@ -523,7 +522,7 @@ class AppDataBase extends _$AppDataBase {
               updatedAt: Value(DateTime.now())));
     } else {
       final user = await Api.apiClient.relationWithOtherUser(
-          isMine ? message.receiverId : message.authorId);
+          isMine ? message.receiverId! : message.authorId!);
       await addToLocalUsersIfUpsent(
         LocalUser(
           lastMessage: lastMessageId,
@@ -541,22 +540,20 @@ class AppDataBase extends _$AppDataBase {
     }
   }
 
-  Future<int> getUserRelation(String id) async {
+  Future<int?> getUserRelation(String id) async {
     final localUser = await (select(localUsers)
           ..where((m) {
             return m.id.equals(id);
           }))
         .getSingle();
-    if (localUser != null) return localUser.relation;
+    if (localUser != null) return localUser.relation!;
     return null;
   }
 
   Future<List<LocalMessage>> getMessages(String id) {
     //for one person by the time
     return (select(localMessages)
-          ..where((m) {
-            return or(m.authorId.equals(id), m.receiverId.equals(id));
-          }))
+      ..where((m) => (m.authorId.equals(id)|m.receiverId.equals(id))))
         .get();
   }
 
