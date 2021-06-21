@@ -23,9 +23,9 @@ class OtherUserProfile extends StatefulWidget {
   final bool isFromChatPage;
 
   OtherUserProfile({
-    Key key,
-    @required this.otherId,
-    @required this.index,
+    Key? key,
+    required this.otherId,
+    required this.index,
     this.isFromChatPage = false,
   }) : super(key: key);
 
@@ -36,15 +36,15 @@ class _OtherUserProfileState extends State<OtherUserProfile>
     with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _imagesPageController = PageController();
-  String otherName;
-  bool isCrush;
+  late String otherName;
+  late bool isCrush;
   bool isLoadingMain = false;
   bool isLoadingSecondary = false;
   bool isLoading = false;
-  bool isSecretCrush;
+  late bool isSecretCrush;
   int currentIndex = 0;
   int relation = Relations.UNKNOWN;
-  Size size;
+  late Size size;
 
   @override
   void initState() {
@@ -144,7 +144,7 @@ class _OtherUserProfileState extends State<OtherUserProfile>
     );
   }
 
-  Widget _scaffoldView({@required Widget body, String title}) {
+  Widget _scaffoldView({required Widget body, String? title}) {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.white,
@@ -168,16 +168,16 @@ class _OtherUserProfileState extends State<OtherUserProfile>
         backgroundColor: Colors.white,
         actions: <Widget>[
           BlocBuilder<UserBloc, UserState>(
-            condition: (prev, cur) => cur is FetchOtherSuccess,
+            buildWhen: (prev, cur) => cur is FetchOtherSuccess,
             builder: (context, state) {
               if (state is FetchOtherSuccess) {
                 final choices = <String>[];
                 choices.add(CHOICE_BLOCK);
-                WidgetsBinding.instance.addPostFrameCallback(
+                WidgetsBinding.instance!.addPostFrameCallback(
                   (_) {
                     if (relation == Relations.UNKNOWN)
                       setState(() {
-                        relation = state.data.relation;
+                        relation = state.data.relation!;
                       });
                   },
                 );
@@ -506,7 +506,7 @@ class _OtherUserProfileState extends State<OtherUserProfile>
     return BlocListener<MassengerBloc, MassengerState>(
       listener: (context, state) {},
       child: BlocListener<UserBloc, UserState>(
-        condition: (prev, cur) =>
+        listenWhen: (prev, cur) =>
             cur is ErrorInFollowing ||
             cur is FollowedSuccessfully ||
             cur is RevealIdentitySuccess ||
@@ -519,7 +519,7 @@ class _OtherUserProfileState extends State<OtherUserProfile>
               isLoadingMain = false;
               isLoadingSecondary = false;
             });
-            _scaffoldKey.currentState.showSnackBar(SnackBar(
+            _scaffoldKey.currentState!.showSnackBar(SnackBar(
               content: Text("Something went wrong when following , try again..",
                   style: TextStyle(color: Colors.white)),
               backgroundColor: Colors.red,
@@ -608,7 +608,7 @@ class _OtherUserProfileState extends State<OtherUserProfile>
           }
         },
         child: BlocBuilder<UserBloc, UserState>(
-          condition: (pre, cur) {
+          buildWhen: (pre, cur) {
             if (cur is LoadingFetchOther ||
                 cur is FetchOtherSuccess ||
                 cur is FetchOtherFailed)
@@ -641,7 +641,7 @@ class _OtherUserProfileState extends State<OtherUserProfile>
               isCrush = state.data.followed;
               otherName = state.data.person.name;
               isSecretCrush = isSecretCrush ??
-                  isCrush && state.data.presentlySecret ??
+                  isCrush && state.data.presentlySecret! ??
                   true;
               return _scaffoldView(
                 title: state.data.person.name,
@@ -654,7 +654,7 @@ class _OtherUserProfileState extends State<OtherUserProfile>
                         Container(
                           child: CircleAvatar(
                             backgroundImage: NetworkImage(
-                              state.data.person.profilePhoto,
+                              state.data.person.profilePhoto!,
                             ),
                             radius: size.width / 11,
                           ),
@@ -676,7 +676,7 @@ class _OtherUserProfileState extends State<OtherUserProfile>
                             : Container(),
                         state.data.person.greekHouse != null
                             ? Text(
-                                state.data.person.greekHouse,
+                                state.data.person.greekHouse!,
                                 softWrap: true,
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 2,
@@ -688,7 +688,7 @@ class _OtherUserProfileState extends State<OtherUserProfile>
                             : Container(),
                         SizedBox(height: 30),
                         AnimatedCount(
-                          count: state.data.person.followCount,
+                          count: state.data.person.followCount!,
                           duration: Duration(milliseconds: 900),
                         ),
                         Text(
@@ -698,7 +698,7 @@ class _OtherUserProfileState extends State<OtherUserProfile>
                         ),
                         SizedBox(height: 40),
                         _getActionButtons(relation, state.data.person.name,
-                            state.data.person, size),
+                            state.data.person, size)!,
                         SizedBox(height: 50),
                         // Expanded(
                         //   flex: 1,
@@ -760,7 +760,7 @@ class _OtherUserProfileState extends State<OtherUserProfile>
                         // ),
                         //<< PLACEHOLDER
 
-                        state.data.person.photos.isNotEmpty
+                        state.data.person.photos!.isNotEmpty
                             ? Container(
                                 alignment: Alignment.center,
                                 margin: EdgeInsets.symmetric(horizontal: 20),
@@ -774,7 +774,7 @@ class _OtherUserProfileState extends State<OtherUserProfile>
                                 ),
                                 child: Wrap(
                                   children:
-                                      state.data.person.photos.map((photo) {
+                                      state.data.person.photos!.map((photo) {
                                     return InkWell(
                                       onTap: () async {
                                         Navigator.push(context,
@@ -828,7 +828,7 @@ class _OtherUserProfileState extends State<OtherUserProfile>
     );
   }
 
-  Widget _getActionButtons(
+  Widget? _getActionButtons(
       int relation, String name, Recommendation user, Size size) {
     switch (relation) {
       case Relations.UNKNOWN:
@@ -854,7 +854,7 @@ class _OtherUserProfileState extends State<OtherUserProfile>
                           ),
                         );
                       }
-                    : null,
+                    : (){},
               ),
               SizedBox(width: size.width / 20),
               CrushButton(
@@ -874,7 +874,7 @@ class _OtherUserProfileState extends State<OtherUserProfile>
                           ),
                         );
                       }
-                    : null,
+                    : (){},
               ),
             ],
           ),
@@ -977,7 +977,7 @@ class _OtherUserProfileState extends State<OtherUserProfile>
                               ),
                             );
                           }
-                        : null,
+                        : (){},
                   ),
                 ],
               ),
@@ -1188,7 +1188,7 @@ class _OtherUserProfileState extends State<OtherUserProfile>
 }
 
 class NickNamePicker extends StatefulWidget {
-  NickNamePicker({Key key}) : super(key: key);
+  NickNamePicker({Key? key}) : super(key: key);
 
   @override
   _NickNamePickerState createState() => _NickNamePickerState();
@@ -1214,12 +1214,12 @@ class _NickNamePickerState extends State<NickNamePicker> {
                   return CupertinoPicker.builder(
                     backgroundColor: null,
                     onSelectedItemChanged: (index) {},
-                    childCount: snapshot.data.length,
+                    childCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
                       return Text(
-                        snapshot.data[index].name +
+                        snapshot.data![index].name +
                             " " +
-                            snapshot.data[index].surname,
+                            snapshot.data![index].surname,
                         style: TextStyle(
                             fontWeight: FontWeight.w600,
                             color: Colors.deepPurple),
@@ -1232,7 +1232,7 @@ class _NickNamePickerState extends State<NickNamePicker> {
                   child: CircularProgressIndicator(),
                 );
               },
-              future: Api.apiClient.getNickNames(25),
+              future: Api.apiClient.getNickNames(25) as Future<List<NickName>>?,
             ),
           )
         ],

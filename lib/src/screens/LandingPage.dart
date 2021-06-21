@@ -36,8 +36,8 @@ import 'package:multi_image_picker2/multi_image_picker2.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:preload_page_view/preload_page_view.dart';
 import 'package:rubber/rubber.dart';
-import 'package:showcaseview/showcase.dart';
-import 'package:showcaseview/showcase_widget.dart';
+import 'package:showcaseview/showcaseview.dart';
+// import 'package:showcaseview/showcase_widget.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -51,10 +51,10 @@ class MyPainter extends CustomPainter {
   final double radius, containerHeight;
   final BuildContext context;
 
-  Color color;
-  double statusBarHeight, screenWidth;
+  late Color color;
+  late double statusBarHeight, screenWidth;
 
-  MyPainter({this.context, this.containerHeight, this.center, this.radius}) {
+  MyPainter({required this.context, required this.containerHeight, required this.center, required this.radius}) {
     ThemeData theme = Theme.of(context);
 
     color = theme.primaryColor;
@@ -86,7 +86,7 @@ GlobalKey _viewProfileKey = new GlobalKey();
 class LandingPage extends StatefulWidget {
   final MainScreenDelegate mainScreenDelegate;
 
-  LandingPage({Key key, this.mainScreenDelegate}) : super(key: key);
+  LandingPage({Key? key, required this.mainScreenDelegate}) : super(key: key);
 
   @override
   _LandingPageState createState() => _LandingPageState();
@@ -95,28 +95,28 @@ class LandingPage extends StatefulWidget {
 class _LandingPageState extends State<LandingPage>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin<LandingPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  PreloadPageController pageController;
+  late PreloadPageController pageController;
   bool disableTopGestures = false;
   LandingNavigationBloc navigationBloc = LandingNavigationBloc();
   PanelController panelController = PanelController();
-  RubberAnimationController _controller;
-  ScrollController _profileScrollController;
-  ScrollController _secretCrushScrollController;
-  AnimationControllerValue upperBoundValue;
-  AnimationControllerValue halfBoundValue;
-  AnimationControllerValue secretHalfBoundValue;
-  AnimationControllerValue secretUpperBoundValue;
-  LandingBloc bloc;
-  Size screenSize;
+  late RubberAnimationController _controller;
+  late ScrollController _profileScrollController;
+  late ScrollController _secretCrushScrollController;
+  late AnimationControllerValue upperBoundValue;
+  late AnimationControllerValue halfBoundValue;
+  late AnimationControllerValue secretHalfBoundValue;
+  late AnimationControllerValue secretUpperBoundValue;
+  late LandingBloc bloc;
+  late Size screenSize;
 
   int currentProfilesIndex = 0;
 
   bool isProfile = true;
   String myId = '';
 
-  double rippleStartX, rippleStartY;
-  AnimationController _searchAnimController;
-  CurvedAnimation _searchAnimation;
+  late double rippleStartX, rippleStartY;
+  late AnimationController _searchAnimController;
+  late CurvedAnimation _searchAnimation;
   bool isInSearchMode = false;
   int index = 1;
 
@@ -132,8 +132,8 @@ class _LandingPageState extends State<LandingPage>
     SharedPref.pref.getIntroShown().then((isShown) {
       print('isShown $isShown');
       if (!isShown) {
-        WidgetsBinding.instance.addPostFrameCallback(
-          (_) => ShowCaseWidget.of(context).startShowCase(
+        WidgetsBinding.instance!.addPostFrameCallback(
+          (_) => ShowCaseWidget.of(context)!.startShowCase(
               [_crushKey, _secretCrushKey, _searchCrushKey, _viewProfileKey]),
         );
       }
@@ -419,7 +419,7 @@ class _LandingPageState extends State<LandingPage>
                                     ),
                                   ),
                                   Visibility(
-                                    visible: snapshot.hasData && snapshot.data,
+                                    visible: snapshot.hasData && snapshot.data!,
                                     child: Align(
                                       alignment: Alignment.bottomRight,
                                       child: Container(
@@ -478,7 +478,7 @@ class _LandingPageState extends State<LandingPage>
                                   ),
                                 ),
                                 Visibility(
-                                  visible: snapshot.hasData && snapshot.data,
+                                  visible: snapshot.hasData && snapshot.data!,
                                   child: Align(
                                     alignment: Alignment.bottomRight,
                                     child: Container(
@@ -531,7 +531,7 @@ class _LandingPageState extends State<LandingPage>
               }
             },
             child: BlocListener<UserBloc, UserState>(
-              condition: (prev, cur) =>
+              listenWhen: (prev, cur) =>
                   cur is ErrorInFollowing ||
                   cur is FollowedSuccessfully ||
                   cur is fetchSuccefully,
@@ -539,7 +539,7 @@ class _LandingPageState extends State<LandingPage>
                 if (userState is fetchSuccefully) myId = userState.user.id;
 
                 if (userState is ErrorInFollowing) {
-                  _scaffoldKey.currentState.showSnackBar(
+                  _scaffoldKey.currentState!.showSnackBar(
                     SnackBar(
                       content: Text(
                           "something went wrong when following , try again..",
@@ -557,7 +557,7 @@ class _LandingPageState extends State<LandingPage>
                         : bloc.add(CrushUser(
                             userState.otherId, userState.followResponse));
                   });
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                  WidgetsBinding.instance!.addPostFrameCallback((_) {
                     // if (userState.followResponse.isDate ?? false) {
                     // showCupertinoDialog(
                     //   context: context,
@@ -586,7 +586,7 @@ class _LandingPageState extends State<LandingPage>
 //              myId.isEmpty
                       ? Container()
                       : BlocProvider(
-                          builder: (_) => bloc,
+                          create: (_) => bloc,
                           child: BlocListener(
                             bloc: bloc,
                             listener: (context, LandingState state) {
@@ -763,7 +763,7 @@ class _LandingPageState extends State<LandingPage>
                                                       });
                                                       _controller.animateTo(
                                                           to: _controller
-                                                              .halfBound);
+                                                              .halfBound!);
                                                     },
                                                   ),
                                                 );
@@ -838,7 +838,7 @@ class _LandingPageState extends State<LandingPage>
                                                           });
                                                           _controller.animateTo(
                                                               to: _controller
-                                                                  .halfBound);
+                                                                  .halfBound!);
                                                         },
                                                       )
                                                     : SecretCrushPage(
@@ -873,7 +873,7 @@ class _LandingPageState extends State<LandingPage>
                                                             _controller
                                                                 .animateTo(
                                                           to: _controller
-                                                              .halfBound,
+                                                              .halfBound!,
                                                         ),
                                                       )
                                                 : Container(),
@@ -922,7 +922,7 @@ class _LandingPageState extends State<LandingPage>
               }
             },
             child: BlocListener<UserBloc, UserState>(
-              condition: (prev, cur) =>
+              listenWhen: (prev, cur) =>
                   cur is ErrorInFollowing ||
                   cur is FollowedSuccessfully ||
                   cur is fetchSuccefully,
@@ -931,7 +931,7 @@ class _LandingPageState extends State<LandingPage>
                 if (userState is fetchSuccefully) myId = userState.user.id;
 
                 if (userState is ErrorInFollowing) {
-                  _scaffoldKey.currentState.showSnackBar(
+                  _scaffoldKey.currentState!.showSnackBar(
                     SnackBar(
                       content: Text(
                           "Something went wrong when following , try again..",
@@ -951,7 +951,7 @@ class _LandingPageState extends State<LandingPage>
                             userState.otherId, userState.followResponse));
                   });
 
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                  WidgetsBinding.instance!.addPostFrameCallback((_) {
                     if (userState.followResponse.isDate ?? false) {
                       _showHasCrushDialog(context, userState);
                     }
@@ -963,7 +963,7 @@ class _LandingPageState extends State<LandingPage>
 //              myId.isEmpty
                       ? Container()
                       : BlocProvider(
-                          builder: (_) => bloc,
+                          create: (_) => bloc,
                           child: BlocBuilder(
                             bloc: bloc,
                             builder: (context, LandingState state) {
@@ -1046,7 +1046,7 @@ class _LandingPageState extends State<LandingPage>
                                                       });
                                                       _controller.animateTo(
                                                           to: _controller
-                                                              .halfBound);
+                                                              .halfBound!);
                                                     },
                                                   ),
                                                 );
@@ -1107,7 +1107,7 @@ class _LandingPageState extends State<LandingPage>
                                                   });
                                                   _controller.animateTo(
                                                       to: _controller
-                                                          .halfBound);
+                                                          .halfBound!);
                                                 },
                                               )
                                             : SecretCrushPage(
@@ -1131,7 +1131,7 @@ class _LandingPageState extends State<LandingPage>
                                                 },
                                                 collapsed: () =>
                                                     _controller.animateTo(
-                                                  to: _controller.halfBound,
+                                                  to: _controller.halfBound!,
                                                 ),
                                               )
                                         : Container(),
@@ -1278,7 +1278,7 @@ class _LandingPageState extends State<LandingPage>
 }
 
 class SecondPage extends StatefulWidget {
-  SecondPage({Key key}) : super(key: key);
+  SecondPage({Key? key}) : super(key: key);
 
   @override
   _SecondPageState createState() => _SecondPageState();
@@ -1294,21 +1294,21 @@ class _SecondPageState extends State<SecondPage> {
 }
 
 class _Preview extends StatelessWidget {
-  final Function onMainPressed;
-  final Function onSecondaryPressed;
-  final Function openOtherProfileTap;
+  final Function? onMainPressed;
+  final Function? onSecondaryPressed;
+  final Function() openOtherProfileTap;
   final Recommendation recommendation;
-  final MainScreenDelegate mainScreenDelegate;
-  final GlobalKey key1;
-  final GlobalKey key2;
-  final GlobalKey key3;
+  final MainScreenDelegate? mainScreenDelegate;
+  final GlobalKey? key1;
+  final GlobalKey? key2;
+  final GlobalKey? key3;
 
   const _Preview({
-    Key key,
+    Key? key,
     this.onMainPressed,
     this.onSecondaryPressed,
-    this.openOtherProfileTap,
-    @required this.recommendation,
+    required this.openOtherProfileTap,
+    required this.recommendation,
     this.mainScreenDelegate,
     this.key1,
     this.key2,
@@ -1337,7 +1337,7 @@ class _Preview extends StatelessWidget {
                 child: FadeInImage.memoryNetwork(
                     fit: BoxFit.cover,
                     placeholder: kTransparentImage,
-                    image: recommendation.profilePhoto),
+                    image: recommendation.profilePhoto!),
               ),
               Center(
                 child: Showcase.withWidget(
@@ -1378,13 +1378,13 @@ class _Preview extends StatelessWidget {
                   child: PreviewButton(
                     text: 'Message',
                     onPressed: () {
-                      mainScreenDelegate.openChatPage(
-                        recommendation.orignallySecret,
+                      mainScreenDelegate!.openChatPage(
+                        recommendation.orignallySecret!,
                         recommendation.name,
                         recommendation.id,
                         false,
-                        recommendation.presentlySecret,
-                        recommendation.profilePhoto,
+                        recommendation.presentlySecret!,
+                        recommendation.profilePhoto!,
                       );
                     },
                   ),
@@ -1396,20 +1396,20 @@ class _Preview extends StatelessWidget {
                       child: PreviewButton(
                         text: 'Secret Message',
                         onPressed: () {
-                          mainScreenDelegate.openChatPage(
-                            recommendation.presentlySecret,
+                          mainScreenDelegate!.openChatPage(
+                            recommendation.presentlySecret!,
                             recommendation.name,
                             recommendation.id.toString(),
                             false,
-                            recommendation.presentlySecret,
-                            recommendation.profilePhoto,
+                            recommendation.presentlySecret!,
+                            recommendation.profilePhoto!,
                           );
                         },
                       ),
                     )
                   : PreviewButtons(
-                      onMainPressed: onMainPressed,
-                      onSecondaryPressed: onSecondaryPressed,
+                      onMainPressed: onMainPressed!,
+                      onSecondaryPressed: onSecondaryPressed!,
                       key1: key1 ?? GlobalKey(),
                       key2: key2 ?? GlobalKey(),
                     ),
@@ -1446,11 +1446,11 @@ class _Preview extends StatelessWidget {
 
 class PreviewInformation extends StatelessWidget {
   final Recommendation recommendation;
-  final Function openOtherProfileTap;
+  final Function() openOtherProfileTap;
   const PreviewInformation({
-    Key key,
-    this.recommendation,
-    this.openOtherProfileTap,
+    Key? key,
+    required this.recommendation,
+    required this.openOtherProfileTap,
   }) : super(key: key);
 
   @override
@@ -1467,7 +1467,7 @@ class PreviewInformation extends StatelessWidget {
               constraints:
                   BoxConstraints(maxWidth: size.width * 0.75, minWidth: 0),
               child: GestureDetector(
-                onDoubleTap: openOtherProfileTap,
+                onDoubleTap:openOtherProfileTap,
                 child: ShadowText(
                   recommendation.name == null
                       ? ''
@@ -1499,7 +1499,7 @@ class PreviewInformation extends StatelessWidget {
         ),
         ShadowText(
           recommendation.university != null
-              ? recommendation.university.capitalize()
+              ? recommendation.university!.capitalize()
               : '',
           style: TextStyle(
             fontSize: size.height / 43.11,
@@ -1512,13 +1512,13 @@ class PreviewInformation extends StatelessWidget {
 }
 
 class PreviewButtons extends StatelessWidget {
-  final Function onMainPressed;
-  final Function onSecondaryPressed;
-  final GlobalKey key1;
-  final GlobalKey key2;
+  final Function? onMainPressed;
+  final Function? onSecondaryPressed;
+  final GlobalKey? key1;
+  final GlobalKey? key2;
 
   PreviewButtons({
-    Key key,
+    Key? key,
     this.onMainPressed,
     this.onSecondaryPressed,
     this.key1,
@@ -1589,7 +1589,7 @@ class PreviewButtons extends StatelessWidget {
               showcaseBackgroundColor: curiousBlue,
               child: PreviewButton(
                 text: 'Crush',
-                onPressed: onMainPressed,
+                onPressed:onMainPressed,
               ),
             ),
             Showcase.withWidget(
@@ -1649,7 +1649,7 @@ class PreviewButtons extends StatelessWidget {
               child: PreviewButton(
                 text: 'Secret Crush',
                 secondary: true,
-                onPressed: onSecondaryPressed,
+                onPressed:onSecondaryPressed,
               ),
             ),
           ],
@@ -1660,15 +1660,15 @@ class PreviewButtons extends StatelessWidget {
 }
 
 class PreviewButton extends StatelessWidget {
-  final String text;
-  final bool secondary;
-  final Function onPressed;
-  final bool isDate;
-  final bool isCrushee;
-  final bool isLoading;
+  final String? text;
+  final bool? secondary;
+  final Function? onPressed;
+  final bool? isDate;
+  final bool? isCrushee;
+  final bool? isLoading;
 
   const PreviewButton({
-    Key key,
+    Key? key,
     this.text,
     this.secondary = false,
     this.onPressed,
@@ -1692,7 +1692,7 @@ class PreviewButton extends StatelessWidget {
 
           gradient:
               isDate ? dateGradient : isCrushee ? crusheeGradient : appGradient,*/
-      if (secondary)
+      if (secondary!)
         return GradientContainerBorder(
           height: height,
           width: width,
@@ -1704,14 +1704,14 @@ class PreviewButton extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(width),
             ),
-            onPressed: onPressed,
+            onPressed:()=> onPressed!(),
             child: Center(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   ShadowText(
-                    text,
+                    text!,
                     style: TextStyle(
                       fontSize: size.height / 50.75,
                       color: Colors.white,
@@ -1719,7 +1719,7 @@ class PreviewButton extends StatelessWidget {
                     ),
                   ),
                   Visibility(
-                    visible: isLoading,
+                    visible: isLoading!,
                     child: Padding(
                       padding: EdgeInsets.only(left: 4.0),
                       child: Container(
@@ -1753,7 +1753,7 @@ class PreviewButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(width)),
           child: FlatButton(
             onPressed: () {
-              onPressed();
+              onPressed!();
             },
             color: text == "Crush" ? pink : null,
             shape: RoundedRectangleBorder(
@@ -1764,7 +1764,7 @@ class PreviewButton extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Text(
-                    text,
+                    text!,
                     style: TextStyle(
                       fontSize: size.width / 25,
                       color: Colors.white,
@@ -1772,7 +1772,7 @@ class PreviewButton extends StatelessWidget {
                     ),
                   ),
                   Visibility(
-                    visible: isLoading,
+                    visible: isLoading!,
                     child: Padding(
                       padding: EdgeInsets.only(left: 4.0),
                       child: Container(
@@ -1798,14 +1798,14 @@ class SecretCrushPage extends StatefulWidget {
   final ScrollController scrollController;
   final Function expanded;
   final Function collapsed;
-  final Function onButtonPressed;
+  final Function() onButtonPressed;
 
   const SecretCrushPage(
-      {Key key,
-      this.scrollController,
-      this.expanded,
-      this.collapsed,
-      this.onButtonPressed})
+      {Key? key,
+      required this.scrollController,
+      required this.expanded,
+      required this.collapsed,
+      required this.onButtonPressed})
       : super(key: key);
 
   @override
@@ -1818,7 +1818,7 @@ class _SecretCrushPageState extends State<SecretCrushPage> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback(
+    WidgetsBinding.instance!.addPostFrameCallback(
         (_) => BlocProvider.of<LandingBloc>(context).add(GetCountries()));
     super.initState();
   }
@@ -1841,8 +1841,8 @@ class _SecretCrushPageState extends State<SecretCrushPage> {
             }
         }
         if (state.openListOfSecretCrushNames) {
-          WidgetsBinding.instance
-              .addPostFrameCallback((_) => key.currentState.expand());
+          WidgetsBinding.instance!
+              .addPostFrameCallback((_) => key.currentState!.expand());
           BlocProvider.of<LandingBloc>(context).add(ResetOpenAfterFilter());
         }
 //        print('isExpanded is $isExpanded');
@@ -1883,7 +1883,7 @@ class _SecretCrushPageState extends State<SecretCrushPage> {
                             onTap: () {
                               BlocProvider.of<LandingBloc>(context).add(
                                   ChangeSelectedAnonymousName(names[index]));
-                              key.currentState.collapse();
+                              key.currentState!.collapse();
                               widget.collapsed();
                               setState(() {
                                 isExpanded = false;
@@ -2008,13 +2008,13 @@ class OtherProfile extends StatefulWidget {
   final Function hideMe;
 
   const OtherProfile({
-    Key key,
-    @required this.recommendation,
-    this.scrollController,
-    this.onCrushBtnPressed,
-    this.onSecreteBtnCrushPressed,
-    this.mainScreenDelegate,
-    this.hideMe,
+    Key? key,
+    required this.recommendation,
+    required this.scrollController,
+    required this.onCrushBtnPressed,
+    required this.onSecreteBtnCrushPressed,
+    required this.mainScreenDelegate,
+    required this.hideMe,
   }) : super(key: key);
 
   @override
@@ -2024,7 +2024,7 @@ class OtherProfile extends StatefulWidget {
 class _OtherProfileState extends State<OtherProfile> {
   final LandingBloc _bloc = LandingBloc();
   int currentIndex = 0;
-  Size screenSize;
+  late Size screenSize;
   final _imagesPageController = PageController();
 
   @override
@@ -2091,7 +2091,7 @@ class _OtherProfileState extends State<OtherProfile> {
                   ),
                   CircleAvatar(
                     backgroundImage:
-                        NetworkImage(widget.recommendation.profilePhoto),
+                        NetworkImage(widget.recommendation.profilePhoto!),
                     radius: screenSize.width / 10,
                   ),
                   SizedBox(
@@ -2100,7 +2100,7 @@ class _OtherProfileState extends State<OtherProfile> {
                   widget.recommendation.university != null &&
                           widget.recommendation.university != 'N/A'
                       ? Text(
-                          widget.recommendation.university.capitalize(),
+                          widget.recommendation.university!.capitalize(),
                           textAlign: TextAlign.left,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
@@ -2113,7 +2113,7 @@ class _OtherProfileState extends State<OtherProfile> {
                   widget.recommendation.greekHouse != null &&
                           widget.recommendation.greekHouse != 'N/A'
                       ? Text(
-                          widget.recommendation.greekHouse,
+                          widget.recommendation.greekHouse!,
                           softWrap: true,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
@@ -2124,7 +2124,7 @@ class _OtherProfileState extends State<OtherProfile> {
                     height: screenSize.height / 40,
                   ),
                   AnimatedCount(
-                    count: widget.recommendation.followCount,
+                    count: widget.recommendation.followCount!,
                     duration: Duration(milliseconds: 900),
                   ),
                   Text(
@@ -2138,7 +2138,7 @@ class _OtherProfileState extends State<OtherProfile> {
               height: screenSize.height / 27,
             ),
             widget.recommendation.photos != null &&
-                    widget.recommendation.photos.isNotEmpty
+                    widget.recommendation.photos!.isNotEmpty
                 ? ConstrainedBox(
                     constraints: BoxConstraints(
                         minHeight: screenSize.height * 0.5,
@@ -2156,7 +2156,7 @@ class _OtherProfileState extends State<OtherProfile> {
                           PageView.builder(
                             scrollDirection: Axis.horizontal,
                             controller: _imagesPageController,
-                            itemCount: widget.recommendation.photos.length,
+                            itemCount: widget.recommendation.photos!.length,
                             itemBuilder: (context, index) {
                               return Container(
                                 decoration: BoxDecoration(
@@ -2164,7 +2164,7 @@ class _OtherProfileState extends State<OtherProfile> {
                                   image: DecorationImage(
                                     fit: BoxFit.cover,
                                     image: NetworkImage(
-                                        widget.recommendation.photos[index]),
+                                        widget.recommendation.photos![index]),
                                   ),
                                   borderRadius: BorderRadius.circular(
                                       screenSize.width / 12.5),
@@ -2175,9 +2175,9 @@ class _OtherProfileState extends State<OtherProfile> {
                           Align(
                             alignment: Alignment.bottomCenter,
                             child: DotsIndicator(
-                              dotsCount: widget.recommendation.photos.length,
-                              position: _imagesPageController.hasClients
-                                  ? _imagesPageController.page
+                              dotsCount: widget.recommendation.photos!.length,
+                              position: _imagesPageController.hasClients!
+                                  ? _imagesPageController.page!
                                   : 0,
                               decorator: DotsDecorator(
                                 color: inactiveDot,
@@ -2212,13 +2212,13 @@ class CrushButton extends StatelessWidget {
   final bool primary;
   final bool isLoading;
   final String text;
-  final Function onPressed;
+  final Function() onPressed;
 
   const CrushButton(
-      {Key key,
-      this.text,
-      this.primary,
-      this.onPressed,
+      {Key? key,
+      required this.text,
+      required this.primary,
+      required this.onPressed,
       this.isLoading = false})
       : super(key: key);
 
@@ -2339,7 +2339,7 @@ class MultiLineText extends StatelessWidget {
   final Text text;
   final double height;
 
-  const MultiLineText({Key key, this.text, this.height = 50}) : super(key: key);
+  const MultiLineText({Key? key, required this.text, this.height = 50}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
