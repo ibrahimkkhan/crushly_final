@@ -1,41 +1,30 @@
 import 'dart:async';
-import 'package:adhara_socket_io/adhara_socket_io.dart';
+
+// import 'package:adhara_socket_io/adhara_socket_io.dart';
+import 'package:socket_io/socket_io.dart';
 import 'package:bloc/bloc.dart';
+import '../../resources/Api.dart';
+import '../../db/AppDB.dart';
+// import '../../Screens/Chat_Page.dart';
+import '../../SharedPref/SharedPref.dart';
+import '../../models/Message.dart';
+import '../../models/User.dart';
+import '../../utils/utils.dart';
 import 'package:flutter/animation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import '../../../Api/Api.dart';
-import '../Screens/Chat_Page.dart';
-import '../../SharedPref/SharedPref.dart';
-import '../../DB/AppDB.dart';
 import 'package:flutter/services.dart';
-import '../../models/Message.dart';
-import '../../models/User.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart'
+    as localLib;
 
 import './bloc.dart';
 
 class MassengerBloc extends Bloc<MassengerEvent, MassengerState> {
   final AppDataBase appDataBase;
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
-  static const AndroidInitializationSettings initializationSettingsAndroid =
-  AndroidInitializationSettings('app_icon');
-  final IOSInitializationSettings initializationSettingsIOS =
-  IOSInitializationSettings(
-      requestAlertPermission: false,
-      requestBadgePermission: false,
-      requestSoundPermission: false,
-      onDidReceiveLocalNotification:
-          (int id, String? title, String? body, String? payload) async {
-        didReceiveLocalNotificationSubject.add(ReceivedNotification(
-            id: id, title: title, body: body, payload: payload));
-      });
-  MassengerBloc(this.appDataBase) : super(InitialMassengerState()) {
+  localLib.FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
-
-
+  MassengerBloc(this.appDataBase) {
     flutterLocalNotificationsPlugin =
         localLib.FlutterLocalNotificationsPlugin();
     var initializationSettingsAndroid =
@@ -47,6 +36,7 @@ class MassengerBloc extends Bloc<MassengerEvent, MassengerState> {
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: onSelectNotification);
   }
+
   @override
   void dispose() {
     disconnect();
@@ -59,10 +49,11 @@ class MassengerBloc extends Bloc<MassengerEvent, MassengerState> {
 
   var platform = MethodChannel('crossingthestreams.io/resourceResolver');
   final String URI =
-      "http://ec2-18-222-51-32.us-east-2.compute.amazonaws.com:3000";
+      "http://ec2-3-13-224-176.us-east-2.compute.amazonaws.com:3002";
 
   final SocketIOManager manager = SocketIOManager();
   SocketIO socket;
+
   // cachMessages will handle all messages of one convesation by the time
   final List<MessageWidget> cachMessages = <MessageWidget>[];
   TickerProvider ticker;
@@ -73,6 +64,7 @@ class MassengerBloc extends Bloc<MassengerEvent, MassengerState> {
 
   String currentOtherId;
   bool inConversation = false;
+
   @override
   MassengerState get initialState => InitialMassengerState();
 
@@ -84,6 +76,7 @@ class MassengerBloc extends Bloc<MassengerEvent, MassengerState> {
     if (event is EnterConversation) {
       ticker = event.ticker;
       inConversation = true;
+      cachMessages.clear();
       yield LoadingLocalMessages();
 
       //this to set all unread messages of this person to read messages
@@ -97,7 +90,9 @@ class MassengerBloc extends Bloc<MassengerEvent, MassengerState> {
           final MessageWidget chatMessage = MessageWidget(
               animationController: null,
               isRecieved: !m.isMine,
-              authorName: m.isMine ? currentUser.name ?? "" : otherName,
+              authorName: m.isMine
+                  ? capitalizeNames(currentUser.name) ?? ""
+                  : capitalizeNames(otherName),
               text: m.message,
               time: DateTime.fromMillisecondsSinceEpoch(int.parse(m.createdAt))
                       .hour
@@ -109,7 +104,9 @@ class MassengerBloc extends Bloc<MassengerEvent, MassengerState> {
           cachMessages.insert(0, chatMessage);
         });
       });
-      yield LocalMessagesReady(cachMessages);
+      int relation = await appDataBase.getUserRelation(otherId);
+
+      yield LocalMessagesReady(cachMessages, relation);
     }
 
 // on app startUp
@@ -120,23 +117,32 @@ class MassengerBloc extends Bloc<MassengerEvent, MassengerState> {
         yield LoadingConnect();
         currentUser = await SharedPref.pref.getUser();
         //! **********************************************************************************
-        Api.apiClient.getQueues(currentUser.id).then((response) {
-          appDataBase.recieveCollectionUnread(response["messages"]);
-          appDataBase.recieveFolloweeCollection(response["followees"]);
-          appDataBase.recieveRevealCollection(response["reveal"]);
-          appDataBase.recieveDateCollection(response["date"]);
-        });
+        final response = await Api.apiClient.getQueues(currentUser.id);
+        await appDataBase.receiveNotifications(
+            response['followees'], 'followee');
+        await appDataBase.receiveNotifications(response['date'], 'date');
+        await appDataBase.recieveCollectionUnread(response["messages"]);
+        await appDataBase.blockUsers(response["blocked"]);
+//          appDataBase.recieveFolloweeCollection(response["followees"]);
+        await appDataBase.recieveRevealCollection(response["reveal"]);
+//          appDataBase.recieveDateCollection(response["date"]);
 
         await initSocket();
+        cachMessages.clear();
+        this.add(EnterConversation(otherId, otherName, ticker));
       }
     }
 
     if (event is RefreashChat) {
-      await Api.apiClient.getQueues(currentUser.id).then((response) {
-        appDataBase.recieveCollectionUnread(response["messages"]);
-        appDataBase.recieveFolloweeCollection(response["followees"]);
-        appDataBase.recieveRevealCollection(response["reveal"]);
-        appDataBase.recieveDateCollection(response["date"]);
+      await Api.apiClient.getQueues(currentUser.id).then((response) async {
+        await appDataBase.recieveCollectionUnread(response["messages"]);
+        await appDataBase.receiveNotifications(
+            response['followees'], 'followee');
+        await appDataBase.blockUsers(response["blocked"]);
+        await appDataBase.receiveNotifications(response['date'], 'date');
+//        appDataBase.recieveFolloweeCollection(response["followees"]);
+        await appDataBase.recieveRevealCollection(response["reveal"]);
+//        appDataBase.recieveDateCollection(response["date"]);
       });
       cachMessages.clear();
       this.add(EnterConversation(otherId, otherName, ticker));
@@ -144,7 +150,9 @@ class MassengerBloc extends Bloc<MassengerEvent, MassengerState> {
     if (event is ConnectedEvent) {
       if (this.state is LocalMessagesReady) {
         yield Connected();
-        yield LocalMessagesReady(cachMessages);
+
+        yield LocalMessagesReady(
+            cachMessages, await appDataBase.getUserRelation(otherId));
       } else {
         yield Connected();
       }
@@ -158,8 +166,8 @@ class MassengerBloc extends Bloc<MassengerEvent, MassengerState> {
     }
     // when new message recieved
     if (event is NewMessageEvent) {
-      print(event.msg.author);
-
+      print("test ${event.msg.author}");
+      final userID = await SharedPref.pref.getMyId();
       // check if the message is from the same person that im chating with right now
       if (event.msg.author == currentOtherId) {
         final MessageWidget message = new MessageWidget(
@@ -180,15 +188,17 @@ class MassengerBloc extends Bloc<MassengerEvent, MassengerState> {
         );
 
         cachMessages.insert(0, message);
+
         appDataBase.sendRecieveDirect(
             LocalMessage(
                 message: event.msg.message,
                 createdAt: event.msg.createdAt.toString(),
                 isRead: true,
-                isMine: false,
+                isMine: userID == event.msg.author,
                 authorId: event.msg.author,
                 receiverId: event.msg.reciever),
-            false);
+            false,
+            currentOtherId == event.msg.author);
         yield MessagesBox(cachMessages);
         message.animationController.forward();
       } else {
@@ -197,14 +207,14 @@ class MassengerBloc extends Bloc<MassengerEvent, MassengerState> {
             message: event.msg.message,
             createdAt: event.msg.createdAt.toString(),
             isRead: false,
-            isMine: false,
+            isMine: userID == event.msg.author,
             authorId: event.msg.author,
             receiverId: event.msg.reciever));
       }
     }
     // send message from me
     if (event is SendEvent) {
-      sendMessage(event.msg);
+      await sendMessage(event.msg);
     }
     if (event is MessageSentEvent) {
       cachMessages.insert(0, event.message);
@@ -256,25 +266,43 @@ class MassengerBloc extends Bloc<MassengerEvent, MassengerState> {
       socket.onDisconnect((data) {
         print("socket diconnect");
       });
+      print('message test');
       // callback on message recived
+
       socket.on("message", (data) {
-        print(data.toString());
+        print("message by ${data.toString()}");
+        print('currentOtherID is $currentOtherId');
         if (currentOtherId == null) {
           _showNotification(
-              "new Message from ${data["Author"]}", data["message"], "message");
+              "new message from ${data["author"]}", data["message"], "message");
         } else {
-          if (currentOtherId != data["Author"]) {
-            _showNotification("new Message from ${data["Author"]}",
-                data["message"], "message");
-          }
+//          if (currentOtherId != data["Author"]) {
+//            _showNotification("new Message from ${data["Author"]}",
+//                data["message"], "message");
+//          }
         }
 
-        this.add(NewMessageEvent(Message(data["message"], data["createdAt"],
-            data["isRead"], data["Author"], data["reciever"])));
+        this.add(NewMessageEvent(Message(
+            data["message"],
+            DateTime.now().millisecondsSinceEpoch,
+            false,
+            data["author"],
+            data["reciever"])));
+      });
+
+      socket.on('blockedBy', (data) {
+        print('blocked by ${data.toString()}');
+        print('user id ${data['_id']}');
+        print('currentOther $currentOtherId');
+        if (currentOtherId != null &&
+            currentOtherId == data['_id'].toString()) {
+          this.add(BlockedUserEvent());
+        }
+        appDataBase.blockUser(data['_id']);
       });
 
       socket.on("reveal", (data) {
-        print(data.toString());
+        print('reveal is ${data.toString()}');
 
         if (data["notify"]) {
           if (currentOtherId != null && data["revealerId"] == currentOtherId) {
@@ -286,54 +314,67 @@ class MassengerBloc extends Bloc<MassengerEvent, MassengerState> {
                 "reveal ${data["revealerId"]}");
           }
         }
-        appDataBase.revealIdetity(
-            data["revealerId"], data['name'], data['nickName'], data["notify"]);
+//        appDataBase.revealIdetity(
+//            data["revealerId"], data['name'], data['nickName'], data["notify"]);
         appDataBase.newNotification(
-            User(
-              id: data["revealerId"],
-              name: data['name'],
-            ),
-            "reveal");
+          User(
+            id: data["revealerId"],
+            name: data['nickName'],
+            thumbnail: data['thumbnail'],
+            createdAt: data['createdAt'],
+          ),
+          "reveal",
+          DateTime(data['createdAt']),
+        );
       });
+
       socket.on("date", (data) {
-        print(data.toString());
+        print('date is ${data.toString()}');
         if (data["notify"]) {
           _showNotification("you have new date ",
               data['name'] + " has date with you", "date ${data["partnerId"]}");
         }
-        appDataBase.recieveDateUser(User(
-            id: data["partnerId"],
-            name: data["name"],
-            notify: data["notify"],
-            orignallySecret: data["orignallySecret"],
-            presentlySecret: data["presentlySecret"],
-            profilePhoto: data["profilePhoto"]));
+//        appDataBase.recieveDateUser(User(
+//            id: data["partnerId"],
+//            name: data["name"],
+//            notify: data["notify"],
+//            orignallySecret: data["orignallySecret"],
+//            presentlySecret: data["presentlySecret"],
+//            profilePhoto: data["profilePhoto"]));
         appDataBase.newNotification(
-            User(
+          User(
               id: data["partnerId"],
               name: data['name'],
-            ),
-            "date");
-      });
-      socket.on('followee', (data) {
-        print(data.toString());
-        if (data["notify"]) {
-          _showNotification("you have new followers",
-              data['name'] + "has follow you", "followee");
-        }
-        appDataBase.recieveFolloweeUser(User(
-            id: data["_id"],
-            name: data["name"],
-            orignallySecret: data["orignallySecret"],
-            presentlySecret: data["presentlySecret"]));
-        appDataBase.newNotification(
-            User(
-              id: data["_id"],
-              name: data['name'],
-            ),
-            "followee");
+              thumbnail: data['thumbnail']),
+          "date",
+          DateTime.fromMillisecondsSinceEpoch(data['createdAt']),
+        );
       });
 
+      socket.on('followee', (data) {
+        print('followee is ${data.toString()}');
+        if (data["notify"]) {
+          _showNotification("you have new followers",
+              capitalizeNames(data['name']) + "has follow you", "followee");
+        }
+//        appDataBase.recieveFolloweeUser(User(
+//            id: data["_id"],
+//            name: data["name"],
+//            orignallySecret: data["orignallySecret"],
+//            presentlySecret: data["presentlySecret"]));
+        print('orignallySecret is ${data["orignallySecret"]}');
+        print('orignallySecret is ${data["createdAt"]}');
+        appDataBase.newNotification(
+          User(
+            id: data["_id"],
+            name: data['name'],
+            thumbnail: data['thumbnail'],
+            orignallySecret: data['orignallySecret'],
+          ),
+          data['orignallySecret'] ? "secretlyFollowee" : "followee",
+          DateTime.fromMillisecondsSinceEpoch(data['createdAt']),
+        );
+      });
       socket.connect();
     } catch (e) {
       print(e);
@@ -346,8 +387,8 @@ class MassengerBloc extends Bloc<MassengerEvent, MassengerState> {
       if (socket != null) {
         await manager?.clearInstance(socket);
       }
-    } on PlatformException {
-      print("platform exception");
+    } on PlatformException catch (e) {
+      print("platform exception e is $e");
     }
     if (this.state is NotConnected) {
     } else {
@@ -355,7 +396,7 @@ class MassengerBloc extends Bloc<MassengerEvent, MassengerState> {
     }
   }
 
-  sendMessage(Message msg) {
+  sendMessage(Message msg) async {
     print(currentUser.name);
     MessageWidget message = MessageWidget(
       animationController: AnimationController(
@@ -363,7 +404,7 @@ class MassengerBloc extends Bloc<MassengerEvent, MassengerState> {
         vsync: ticker,
       ),
       isRecieved: false,
-      authorName: currentUser.name,
+      authorName: capitalizeNames(currentUser.name),
       text: msg.message,
       time: DateTime.fromMillisecondsSinceEpoch(msg.createdAt).hour.toString() +
           ":" +
@@ -384,17 +425,21 @@ class MassengerBloc extends Bloc<MassengerEvent, MassengerState> {
         print("ACK recieved for $msg: $data");
       });
     }
+    this.add(MessageSentEvent(message));
+
+    print('senddd');
 
     appDataBase.sendRecieveDirect(
-        LocalMessage(
-            message: msg.message,
-            createdAt: msg.createdAt.toString(),
-            isRead: true,
-            isMine: true,
-            receiverId: otherId,
-            authorId: currentUser.id),
-        true);
-    this.add(MessageSentEvent(message));
+      LocalMessage(
+          message: msg.message,
+          createdAt: msg.createdAt.toString(),
+          isRead: true,
+          isMine: true,
+          receiverId: otherId,
+          authorId: currentUser.id),
+      true,
+      true,
+    );
   }
 
   Future<void> _showNotification(
@@ -475,6 +520,10 @@ class MassengerBloc extends Bloc<MassengerEvent, MassengerState> {
   Future<void> onSelectNotification(String payload) async {
     if (payload != null) {
       debugPrint('notification payload: ' + payload);
+
+      print(localLib.Message);
+      print(localLib.Person);
+
       this.add(Navigate(payload));
     }
 

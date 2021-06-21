@@ -1,5 +1,6 @@
+import '../../blocs/Massenger_Bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import '../../Screens/Chat_Page.dart';
+import '../../screens/Chat_Page.dart';
 
 @immutable
 abstract class MassengerState {}
@@ -10,8 +11,9 @@ class Connected extends MassengerState {}
 
 class LocalMessagesReady extends MassengerState {
   final List<MessageWidget> messages;
+  final int relation;
 
-  LocalMessagesReady(this.messages);
+  LocalMessagesReady(this.messages, this.relation);
 }
 
 class NotConnected extends MassengerState {

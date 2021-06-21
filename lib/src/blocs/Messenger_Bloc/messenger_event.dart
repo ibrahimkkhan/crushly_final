@@ -1,9 +1,7 @@
-import 'dart:developer';
-
-import 'package:flutter/scheduler.dart';
-import 'package:meta/meta.dart';
 import '../../Screens/Chat_Page.dart';
 import '../../models/Message.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:meta/meta.dart';
 
 @immutable
 abstract class MassengerEvent {}
@@ -14,6 +12,7 @@ class ConnectedEvent extends MassengerEvent {}
 
 class NotConnectedEvent extends MassengerEvent {
   final String error;
+
   NotConnectedEvent(this.error);
 }
 
@@ -23,16 +22,18 @@ class NewMessageEvent extends MassengerEvent {
   NewMessageEvent(this.msg);
 }
 
+class BlockedUserEvent extends MassengerEvent {}
+
 class MessageSentEvent extends MassengerEvent {
   final MessageWidget message;
+
   MessageSentEvent(this.message);
 }
 
 class SendEvent extends MassengerEvent {
   final Message msg;
 
-  final String otherId;
-  SendEvent(this.msg, this.otherId);
+  SendEvent(this.msg);
 }
 
 class EnterConversation extends MassengerEvent {
@@ -53,11 +54,14 @@ class RefreashChat extends MassengerEvent {}
 
 class Navigate extends MassengerEvent {
   final String payload;
+
   Navigate(this.payload);
 }
 
 class RevealEventForChat extends MassengerEvent {
   final String newName;
+
   RevealEventForChat(this.newName);
 }
-class TextEvent extends MassengerEvent{}
+
+class TextEvent extends MassengerEvent {}

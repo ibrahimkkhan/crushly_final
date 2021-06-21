@@ -15,7 +15,7 @@ class Location extends StatefulWidget {
 }
 
 class _LocationState extends State<Location> {
-  final _bloc = new AuthBloc();
+  final _bloc = new AuthBloc(AuthInitialState());
   late Size screenSize;
   bool loading = false;
 
