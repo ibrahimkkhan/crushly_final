@@ -30,40 +30,40 @@ class PasswordChanged extends AuthEvent {
 }
 
 class LoginInitiated extends AuthEvent {
-  final String email;
-  final String password;
+  final String? email;
+  final String? password;
 
   LoginInitiated({
-    required this.email,
-    required this.password,
+    this.email,
+    this.password,
   });
 }
 
 class SignUpInitiated extends AuthEvent {
-  final String email;
-  final String gender;
-  final String lastName;
-  final String password;
-  final String firstName;
-  final String birthDate;
-  final String schoolType;
-  final String schoolName;
-  final String primaryPhoto;
-  final String interestedGender;
-  final List<String> photos;
+  final String? email;
+  final String? gender;
+  final String? lastName;
+  final String? password;
+  final String? firstName;
+  final String? birthDate;
+  final String? schoolType;
+  final String? schoolName;
+  final String? primaryPhoto;
+  final String? interestedGender;
+  final List<String>? photos;
 
   SignUpInitiated({
-    required this.email,
-    required this.gender,
-    required this.lastName,
-    required this.password,
-    required this.firstName,
-    required this.birthDate,
-    required this.schoolType,
-    required this.schoolName,
-    required this.primaryPhoto,
-    required this.interestedGender,
-    required this.photos,
+    this.email,
+    this.gender,
+    this.lastName,
+    this.password,
+    this.firstName,
+    this.birthDate,
+    this.schoolType,
+    this.schoolName,
+    this.primaryPhoto,
+    this.interestedGender,
+    this.photos,
   });
 }
 

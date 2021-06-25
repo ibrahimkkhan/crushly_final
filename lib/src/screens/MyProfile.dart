@@ -1,24 +1,23 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:crushly/BLocs/Massenger_Bloc/bloc.dart';
-import 'package:crushly/BLocs/PhotoManger_Bloc/bloc.dart';
-import 'package:crushly/BLocs/User_Bloc/bloc.dart';
-import 'package:crushly/DB/AppDB.dart';
-import 'package:crushly/Screens/BlockList_Page.dart';
-import 'package:crushly/Screens/Chat_List.dart';
-import 'package:crushly/Screens/DateListPage.dart';
-import 'package:crushly/Screens/NewStory_Page.dart';
-import 'package:crushly/Screens/NotificationPage.dart';
-import 'package:crushly/Screens/OtherProfile.dart';
-import 'package:crushly/Screens/Rings_Holding.dart';
-import 'package:crushly/Screens/StoryViewPage.dart';
-import 'package:crushly/Screens/myFollowees_list.dart';
-import 'package:crushly/Screens/photoView.dart';
-import 'package:crushly/Screens/search_user.dart';
-import 'package:crushly/main.dart';
-import 'package:crushly/models/User.dart';
-import 'package:crushly/utils/utils.dart';
+import '../blocs/Messenger_Bloc/bloc.dart';
+import '../blocs/PhotoManger_Bloc/bloc.dart';
+import '../blocs/User_Bloc/bloc.dart';
+import '../DB/AppDB.dart';
+import '../screens/BlockList_Page.dart';
+import '../screens/Chat_List.dart';
+import '../screens/DateListPage.dart';
+import '../screens/NewStory_Page.dart';
+import '../screens/NotificationPage.dart';
+import '../screens/OtherProfile.dart';
+import '../screens/Rings_Holding.dart';
+import '../screens/StoryViewPage.dart';
+import '../screens/myFollowees_list.dart';
+import '../screens/photoView.dart';
+import '../Screens/search_user.dart';
+import '../models/User.dart';
+import '../utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,30 +33,31 @@ class MyProfile extends StatefulWidget {
 }
 
 class _MyProfileState extends State<MyProfile> {
-  AppLifecycleState appLifecycleState;
-  List<User> followlist;
+  late AppLifecycleState appLifecycleState;
+  late List<User> followlist;
+  final ImagePicker _picker = ImagePicker();
 
-  File _image;
+  late PickedFile? _image;
 
   Future<void> retrieveLostData() async {
-    final LostDataResponse response = await ImagePicker.retrieveLostData();
+    final LostData response = await _picker.getLostData();
     if (response.isEmpty) {
       return;
     }
     if (response.file != null) {
       _image = response.file;
-      photomanagerBloc.add(SetPhoto(_image));
+      photomanagerBloc.add(SetPhoto(_image as File));
     }
   }
 
-  PhotomanagerBloc photomanagerBloc;
+  late PhotomanagerBloc photomanagerBloc;
 
   Future _getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+    var image = await _picker.getImage(source: ImageSource.camera);
 
     if (image != null) {
       _image = image;
-      photomanagerBloc.add(SetPhoto(_image));
+      photomanagerBloc.add(SetPhoto(_image as File));
     }
   }
 
@@ -74,8 +74,8 @@ class _MyProfileState extends State<MyProfile> {
     super.dispose();
   }
 
-  String photoUrl;
-  String myId;
+  late String photoUrl;
+  late String myId;
 
   @override
   Widget build(BuildContext context) {
@@ -144,7 +144,7 @@ class _MyProfileState extends State<MyProfile> {
         }
       },
       child: BlocBuilder<UserBloc, UserState>(
-          condition: (previousState, currentState) {
+          buildWhen: (previousState, currentState) {
         if (currentState is fetchSuccefully ||
             currentState is fetchFailed ||
             currentState is LoadingFetch) {
@@ -154,9 +154,9 @@ class _MyProfileState extends State<MyProfile> {
         }
       }, builder: (context, state) {
         if (state is fetchSuccefully) {
-          followlist = state.user.followList;
+          followlist = state.user.followList!;
           myId = state.user.id;
-          photoUrl = state.user.profilePhoto;
+          photoUrl = state.user.profilePhoto!;
           return Scaffold(
               backgroundColor: Colors.white,
               appBar: AppBar(
@@ -183,7 +183,7 @@ class _MyProfileState extends State<MyProfile> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => ChatList(
-                                      followersList: state.user.followList,
+                                      followersList: state.user.followList!,
                                     )));
                       },
                     ),
@@ -364,7 +364,7 @@ class _MyProfileState extends State<MyProfile> {
                       ),
                       Center(
                         child: Text(
-                          capitalizeNames(state.user.name) ?? 'NULL',
+                          capitalizeNames(state.user.name!) ?? 'NULL',
                           style: TextStyle(
                             fontFamily: "Raleway",
                             fontWeight: FontWeight.bold,
@@ -393,7 +393,7 @@ class _MyProfileState extends State<MyProfile> {
                             ),
                           ),
                           BlocBuilder<MassengerBloc, MassengerState>(
-                            condition: (pre, cur) =>
+                            buildWhen: (pre, cur) =>
                                 cur is Connected || cur is NotConnected,
                             builder: (context, state) {
                               if (state is Connected) {
@@ -614,7 +614,7 @@ class _MyProfileState extends State<MyProfile> {
                                 padding: EdgeInsets.only(bottom: height * 0.02),
                                 child: Text(
                                   state.user.followList != null
-                                      ? state.user.followList.length.toString()
+                                      ? state.user.followList!.length.toString()
                                       : '',
                                   style: TextStyle(
                                       fontFamily: "Raleway",
@@ -726,14 +726,14 @@ class _MyProfileState extends State<MyProfile> {
                               .watchUserWithStories(),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
-                              if (snapshot.data.isEmpty) {
+                              if (snapshot.data!.isEmpty) {
                                 return Text("no Stories");
                               }
                               return Container(
                                 height: 100,
                                 child: ListView.builder(
                                   scrollDirection: Axis.horizontal,
-                                  itemCount: snapshot.data.length,
+                                  itemCount: snapshot.data!.length,
                                   itemBuilder: (context, index) {
                                     return GestureDetector(
                                       onTap: () {
@@ -751,7 +751,7 @@ class _MyProfileState extends State<MyProfile> {
                                           backgroundImage:
                                               CachedNetworkImageProvider(
                                                   snapshot
-                                                      .data[index].story.url),
+                                                      .data![index].story.url),
                                         ),
                                       ),
                                     );

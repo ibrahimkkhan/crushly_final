@@ -19,13 +19,13 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 class OtherUserProfile extends StatefulWidget {
   final String otherId;
-  final int index;
+  final int? index;
   final bool isFromChatPage;
 
   OtherUserProfile({
     Key? key,
     required this.otherId,
-    required this.index,
+    this.index,
     this.isFromChatPage = false,
   }) : super(key: key);
 

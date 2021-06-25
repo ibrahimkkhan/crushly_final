@@ -31,7 +31,7 @@ class _SignInState extends State<SignIn> {
   late FocusNode emailFocus;
   late FocusNode passwordFocus;
   late bool show;
-  final _bloc = new AuthBloc();
+  final _bloc = new AuthBloc(AuthInitialState());
   late Size screenSize;
 
   @override
@@ -67,7 +67,7 @@ class _SignInState extends State<SignIn> {
         listener: (context, AuthState state) {
           if (state is SignInState) if (state.signInSuccessfully) {
             BlocProvider.of<MassengerBloc>(context).add(Connect());
-            WidgetsBinding.instance.addPostFrameCallback(
+            WidgetsBinding.instance!.addPostFrameCallback(
               (_) => Navigator.pushAndRemoveUntil(
                 context,
                 // MaterialPageRoute(builder: (_) => MainScreen()),

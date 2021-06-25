@@ -8,8 +8,8 @@ class DialogButton extends StatelessWidget {
     this.color = Colors.transparent,
     this.textColor = Colors.purple,
   });
-  final String text;
-  final Function onPress;
+  final String? text;
+  final Function()? onPress;
   final Color color;
   final Color textColor;
 

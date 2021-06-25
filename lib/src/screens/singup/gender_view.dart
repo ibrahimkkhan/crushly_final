@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 class GenderView extends StatefulWidget {
   final Function(String) genderChanged;
   final String secondText;
-  final String firstText;
+  final String? firstText;
   final String gender;
   final double newValue;
   final GenderType genderType;
@@ -19,7 +19,7 @@ class GenderView extends StatefulWidget {
   GenderView(
       {required this.gender,
       required this.newValue,
-      required this.firstText,
+      this.firstText,
       required this.secondText,
       required this.genderChanged,
       required this.genderType});

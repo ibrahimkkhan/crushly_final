@@ -28,7 +28,7 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
-  final _bloc = new AuthBloc();
+  final _bloc = new AuthBloc(AuthInitialState());
   late FocusNode focus1;
   late FocusNode focus2;
   PageController _pageController = PageController(initialPage: PAGE_NAME);
@@ -135,7 +135,7 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
                     if (state is SignUpState) {
                       print('statee is ${state}');
                       if (state.isEmailAvailable != null &&
-                          state.isEmailAvailable &&
+                          state.isEmailAvailable! &&
                           _pageController.page!.floor() != PAGE_PHOTOS) {
                         _pageController.nextPage(
                             duration: Duration(milliseconds: 350),
@@ -302,7 +302,7 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
                                   },
                                 ),
                                 EnterUniversity(
-                                  schoolName: _bloc.schoolName.name,
+                                  schoolName: _bloc.schoolName.name!,
                                   onSchoolChanged: (String university) {
                                     setState(() {
                                       _bloc.schoolName.name = university;
@@ -468,7 +468,7 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
       case PAGE_UNIVERSITY:
         return _bloc.schoolName != null &&
             _bloc.schoolName.name != null &&
-            _bloc.schoolName.name.isNotEmpty;
+            _bloc.schoolName.name!.isNotEmpty;
       case PAGE_GEEK_HOUSE:
         return _bloc.greekHouse.isNotEmpty;
       case PAGE_PHOTOS:
