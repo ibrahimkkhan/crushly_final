@@ -1,12 +1,12 @@
-import 'package:crushly/Screens/Chat_List.dart';
-import 'package:crushly/Screens/Chat_Page.dart';
-import 'package:crushly/Screens/LandingPage.dart';
-import 'package:crushly/Screens/my_profile/my_profile_page.dart';
-import 'package:crushly/SharedPref/SharedPref.dart';
-import 'package:crushly/models/recommendation.dart';
-import 'package:crushly/utils/main_screen_delegate.dart';
+import 'src/screens/Chat_List.dart';
+import 'src/screens/Chat_Page.dart';
+import 'src/screens/LandingPage.dart';
+import 'src/screens/my_profile/my_profile_page.dart';
+import 'src/SharedPref/SharedPref.dart';
+import 'src/models/recommendation.dart';
+import 'src/utils/main_screen_delegate.dart';
 import 'package:flutter/material.dart';
-import 'package:showcaseview/showcase_widget.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -19,12 +19,12 @@ class _MainScreenState extends State<MainScreen> implements MainScreenDelegate {
 
   bool isChatPage = false;
 
-  bool originallySecret;
-  String otherName;
-  String otherImage;
-  String otherID;
-  bool isFromFolloweePage;
-  bool presentlySecret;
+  late bool originallySecret;
+  late String otherName;
+  late String otherImage;
+  late String otherID;
+  late bool isFromFolloweePage;
+  late bool presentlySecret;
 
   @override
   void initState() {

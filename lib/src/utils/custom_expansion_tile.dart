@@ -4,10 +4,10 @@ const Duration _kExpand = Duration(milliseconds: 200);
 
 class CustomExpansionTile extends StatefulWidget {
   const CustomExpansionTile({
-    Key key,
+    Key? key,
     this.headerBackgroundColor,
     this.leading,
-    @required this.title,
+    required this.title,
     this.backgroundColor,
     this.iconColor,
     this.onExpansionChanged,
@@ -17,21 +17,21 @@ class CustomExpansionTile extends StatefulWidget {
   })  : assert(initiallyExpanded != null),
         super(key: key);
 
-  final Widget leading;
+  final Widget? leading;
 
   final Widget title;
 
-  final ValueChanged<bool> onExpansionChanged;
+  final ValueChanged<bool>? onExpansionChanged;
 
   final List<Widget> children;
 
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
-  final Color headerBackgroundColor;
+  final Color? headerBackgroundColor;
 
-  final Color iconColor;
+  final Color? iconColor;
 
-  final Widget trailing;
+  final Widget? trailing;
 
   final bool initiallyExpanded;
 
@@ -53,13 +53,13 @@ class CustomExpansionTileState extends State<CustomExpansionTile>
   final ColorTween _iconColorTween = ColorTween();
   final ColorTween _backgroundColorTween = ColorTween();
 
-  AnimationController _controller;
-  Animation<double> _iconTurns;
-  Animation<double> _heightFactor;
-  Animation<Color> _borderColor;
-  Animation<Color> _headerColor;
-  Animation<Color> _iconColor;
-  Animation<Color> _backgroundColor;
+  late AnimationController _controller;
+  late Animation<double> _iconTurns;
+  late Animation<double> _heightFactor;
+  late Animation<Color?> _borderColor;
+  late Animation<Color?> _headerColor;
+  late Animation<Color?> _iconColor;
+  late Animation<Color?> _backgroundColor;
 
   bool _isExpanded = false;
 
@@ -113,7 +113,7 @@ class CustomExpansionTileState extends State<CustomExpansionTile>
         PageStorage.of(context)?.writeState(context, _isExpanded);
       });
       if (widget.onExpansionChanged != null) {
-        widget.onExpansionChanged(_isExpanded);
+        widget.onExpansionChanged!(_isExpanded);
       }
     }
   }
@@ -134,12 +134,12 @@ class CustomExpansionTileState extends State<CustomExpansionTile>
       PageStorage.of(context)?.writeState(context, _isExpanded);
     });
     if (widget.onExpansionChanged != null)
-      widget.onExpansionChanged(_isExpanded);
+      widget.onExpansionChanged!(_isExpanded);
   }
 
-  Widget _buildChildren(BuildContext context, Widget child) {
+  Widget _buildChildren(BuildContext context, Widget? child) {
     final Color borderSideColor = _borderColor.value ?? Colors.transparent;
-    final Color titleColor = _headerColor.value;
+    final Color? titleColor = _headerColor.value;
 
     return Container(
       decoration: BoxDecoration(
@@ -161,7 +161,7 @@ class CustomExpansionTileState extends State<CustomExpansionTile>
                 title: DefaultTextStyle(
                   style: Theme.of(context)
                       .textTheme
-                      .subhead
+                      .subhead!
                       .copyWith(color: titleColor),
                   child: widget.title,
                 ),
@@ -192,7 +192,7 @@ class CustomExpansionTileState extends State<CustomExpansionTile>
     final ThemeData theme = Theme.of(context);
     _borderColorTween..end = theme.dividerColor;
     _headerColorTween
-      ..begin = theme.textTheme.subhead.color
+      ..begin = theme.textTheme.subtitle1!.color
       ..end = theme.accentColor;
     _iconColorTween
       ..begin = theme.unselectedWidgetColor

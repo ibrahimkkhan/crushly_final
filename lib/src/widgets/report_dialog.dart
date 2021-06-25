@@ -5,7 +5,7 @@ import 'dialog_title.dart';
 
 class ReportDialogContent extends StatefulWidget {
   //
-  ReportDialogContent({this.sendReport});
+  ReportDialogContent({required this.sendReport});
   final Function sendReport;
 
   @override
@@ -15,7 +15,7 @@ class ReportDialogContent extends StatefulWidget {
 class _ReportDialogContentState extends State<ReportDialogContent> {
   //
 
-  int _selectedRadio;
+  late int _selectedRadio;
 
   @override
   void initState() {
@@ -73,7 +73,7 @@ class _ReportDialogContentState extends State<ReportDialogContent> {
                         groupValue: _selectedRadio,
                         onChanged: (val) {
                           setState(() {
-                            _selectedRadio = val;
+                            _selectedRadio = val as int;
                           });
                         })
                   ],
@@ -93,7 +93,7 @@ class _ReportDialogContentState extends State<ReportDialogContent> {
                         groupValue: _selectedRadio,
                         onChanged: (val) {
                           setState(() {
-                            _selectedRadio = val;
+                            _selectedRadio = val as int;
                           });
                         })
                   ],
@@ -113,7 +113,7 @@ class _ReportDialogContentState extends State<ReportDialogContent> {
                         groupValue: _selectedRadio,
                         onChanged: (val) {
                           setState(() {
-                            _selectedRadio = val;
+                            _selectedRadio = val as int;
                           });
                         })
                   ],

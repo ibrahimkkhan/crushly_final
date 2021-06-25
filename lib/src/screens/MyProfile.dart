@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:crushly_final/src/db/AppDB.dart';
 import '../blocs/Messenger_Bloc/bloc.dart';
 import '../blocs/PhotoManger_Bloc/bloc.dart';
 import '../blocs/User_Bloc/bloc.dart';
@@ -743,7 +744,7 @@ class _MyProfileState extends State<MyProfile> {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     StoryViewPage(
-                                                        snapshot.data)));
+                                                        snapshot.data as List<dynamic>)));
                                       },
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class DialogTitle extends StatelessWidget {
   //
-  DialogTitle({this.text, this.fontWeight = FontWeight.normal});
+  DialogTitle({required this.text, this.fontWeight = FontWeight.normal});
   final String text;
   final FontWeight fontWeight;
 

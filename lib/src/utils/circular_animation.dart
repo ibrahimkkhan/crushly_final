@@ -5,15 +5,15 @@ import 'dart:ui' show lerpDouble;
 /// [CircularAnimation] widget controls the circular reveal animation of any view (child)
 class CircularAnimation extends StatelessWidget {
   /// The point that the animation starts and ends
-  final Offset offset;
-  final double minRadius;
-  final double maxRadius;
+  final Offset? offset;
+  final double? minRadius;
+  final double? maxRadius;
   final Widget child;
   final Animation<double> animation;
 
   CircularAnimation({
-    @required this.child,
-    @required this.animation,
+    required this.child,
+    required this.animation,
     this.offset,
     this.minRadius,
     this.maxRadius,
@@ -24,13 +24,13 @@ class CircularAnimation extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: animation,
-      builder: (BuildContext context, Widget _) {
+      builder: (BuildContext context, Widget? _) {
         return ClipPath(
           clipper: AnimationClipper(
             fraction: animation.value,
-            offset: offset,
-            minRadius: minRadius,
-            maxRadius: maxRadius,
+            offset: offset!,
+            minRadius: minRadius!,
+            maxRadius: maxRadius!,
           ),
           child: this.child,
         );
@@ -45,12 +45,12 @@ class CircularAnimation extends StatelessWidget {
 class AnimationClipper extends CustomClipper<Path> {
   /// value between 0 and 1. It's the distance between minRadius and maxRadius
   final double fraction;
-  final Offset offset;
-  final double minRadius;
-  final double maxRadius;
+  final Offset? offset;
+  final double? minRadius;
+  final double? maxRadius;
 
   AnimationClipper({
-    @required this.fraction,
+    required this.fraction,
     this.offset,
     this.minRadius,
     this.maxRadius,
@@ -66,7 +66,7 @@ class AnimationClipper extends CustomClipper<Path> {
       ..addOval(
         Rect.fromCircle(
           center: center,
-          radius: lerpDouble(minRadius, maxRadius, fraction),
+          radius: lerpDouble(minRadius, maxRadius, fraction)!,
         ),
       );
   }
