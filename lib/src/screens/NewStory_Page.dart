@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:crushly/BLocs/StoryBloc/bloc.dart';
-import 'package:crushly/BLocs/User_Bloc/bloc.dart';
+import '../blocs/StoryBloc/bloc.dart';
+import '../blocs/User_Bloc/bloc.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,14 +16,14 @@ class NewStoryPage extends StatefulWidget {
 }
 
 class _NewStoryPageState extends State<NewStoryPage> {
-  String text;
-  String url;
-  ByteData _image;
-  bool forever = false;
-  bool imagePicked = false;
-  StoryBloc storyBloc;
-  String imagePath;
-  String result;
+  String? text;
+  String? url;
+  ByteData? _image;
+  bool? forever = false;
+  bool? imagePicked = false;
+  StoryBloc? storyBloc;
+  String? imagePath;
+  String? result;
   static const platform = const MethodChannel('crushly.mohammad.test');
 
   // Future<void> retrieveLostData() async {
@@ -61,7 +61,7 @@ class _NewStoryPageState extends State<NewStoryPage> {
   @override
   void dispose() {
     super.dispose();
-    storyBloc.close();
+    storyBloc!.close();
   }
 
   @override
@@ -132,9 +132,9 @@ class _NewStoryPageState extends State<NewStoryPage> {
                   color: Colors.blueGrey,
                   width: sizeAware.width / 0.5555,
                   height: sizeAware.height / 2.5555,
-                  child: imagePicked
+                  child: imagePicked!
                       ? Image.file(
-                          File.fromUri(Uri.parse(result)),
+                          File.fromUri(Uri.parse(result!)),
                           fit: BoxFit.cover,
                         )
                       : IconButton(
@@ -220,10 +220,10 @@ class _NewStoryPageState extends State<NewStoryPage> {
                     }
                     return RaisedButton(
                       onPressed: () async {
-                        if (text != null && imagePicked) {
-                          if (text.isNotEmpty) {
-                            storyBloc.add(NewStory(widget.userId, text, forever,
-                                imagePath, _image));
+                        if (text != null && imagePicked!) {
+                          if (text!.isNotEmpty) {
+                            storyBloc!.add(NewStory(widget.userId, text!, forever!,
+                                imagePath!, _image!));
                           }
                         } else {
                           Scaffold.of(context).showSnackBar(SnackBar(

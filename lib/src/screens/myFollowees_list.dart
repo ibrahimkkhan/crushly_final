@@ -1,33 +1,32 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:crushly/BLocs/Followers&Date_Bloc/bloc.dart';
-import 'package:crushly/BLocs/Followers&Date_Bloc/followers_date_bloc.dart';
-import 'package:crushly/BLocs/Followers&Date_Bloc/followers_date_event.dart';
-import 'package:crushly/BLocs/InListSearch_Bloc/inlistsearch_bloc.dart';
-import 'package:crushly/Common/InListsSearchDelegate.dart';
-import 'package:crushly/DB/AppDB.dart';
-import 'package:crushly/Screens/OpenlyFollowList.dart';
-import 'package:crushly/models/User.dart';
-import 'package:crushly/theme.dart';
-import 'package:crushly/utils/utils.dart';
+import '../blocs/Followers&Date_Bloc/bloc.dart';
+import '../blocs/Followers&Date_Bloc/followers_date_bloc.dart';
+import '../blocs/Followers&Date_Bloc/followers_date_event.dart';
+import '../blocs/InListSearch_Bloc/inlistsearch_bloc.dart';
+import '../common/InListsSearchDelegate.dart';
+import '../DB/AppDB.dart';
+import '../Screens/OpenlyFollowList.dart';
+import '../theme/theme.dart';
+import '../utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:crushly/BLocs/User_Bloc/bloc.dart';
-import 'package:crushly/Screens/Chat_Page.dart';
-import 'package:crushly/Screens/OtherProfile.dart';
+import '../BLocs/User_Bloc/bloc.dart';
+import '../Screens/Chat_Page.dart';
+import '../Screens/OtherProfile.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class MyFolloweesList extends StatefulWidget {
-  final bool openChat;
+  final bool? openChat;
 
-  const MyFolloweesList({Key key, this.openChat}) : super(key: key);
+  const MyFolloweesList({Key? key, this.openChat}) : super(key: key);
 
   @override
   _MyFolloweesListState createState() => _MyFolloweesListState();
 }
 
 class _MyFolloweesListState extends State<MyFolloweesList> {
-  FollowersDateBloc followersDateBloc;
-  InlistsearchBloc inlistsearchBloc;
+  late FollowersDateBloc followersDateBloc;
+  late InlistsearchBloc inlistsearchBloc;
   final _scrollController = ScrollController();
   final _scrollThreshold = 200.0;
 
@@ -94,7 +93,7 @@ class _MyFolloweesListState extends State<MyFolloweesList> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => widget.openChat
+                                    builder: (context) => widget.openChat!
                                         ? ChatPage(
                                       presentlySecret: state.result[index].presentlySecret,
                                       otherID: state.result[index].id,
@@ -212,7 +211,7 @@ class FolloweeCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      user.name,
+                      user.name!,
                       style:
                           TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                     ),

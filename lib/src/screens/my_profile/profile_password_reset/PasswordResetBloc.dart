@@ -1,11 +1,13 @@
 import 'package:bloc/bloc.dart';
-import 'package:crushly/Api/Api.dart';
-import 'package:crushly/Screens/my_profile/profile_password_reset/PasswordResetEvent.dart';
-import 'package:crushly/Screens/my_profile/profile_password_reset/PasswordResetState.dart';
+import '../../../resources/Api.dart';
+import '../../../screens/my_profile/profile_password_reset/PasswordResetEvent.dart';
+import '../../../screens/my_profile/profile_password_reset/PasswordResetState.dart';
 
 class PasswordResetBloc extends Bloc<PasswordResetEvent, PasswordResetState> {
   @override // TODO: implement initialState
   PasswordResetState get initialState => InitialState();
+
+  PasswordResetBloc(PasswordResetState initialState):super(InitialState());
 
   @override
   Stream<PasswordResetState> mapEventToState(PasswordResetEvent event) async* {

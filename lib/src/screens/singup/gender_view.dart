@@ -9,19 +9,19 @@ import '../../utils/utils.dart';
 import 'package:flutter/material.dart';
 
 class GenderView extends StatefulWidget {
-  final Function(String) genderChanged;
+  final Function(String)? genderChanged;
   final String secondText;
   final String? firstText;
   final String gender;
-  final double newValue;
+  final double? newValue;
   final GenderType genderType;
 
   GenderView(
       {required this.gender,
-      required this.newValue,
+      this.newValue,
       this.firstText,
       required this.secondText,
-      required this.genderChanged,
+      this.genderChanged,
       required this.genderType});
 
   @override
@@ -40,7 +40,7 @@ class _GenderViewState extends State<GenderView> {
 
   @override
   Widget build(BuildContext context) {
-    value = widget.newValue;
+    value = widget.newValue!;
     screenSize = MediaQuery.of(context).size;
     return Padding(
       padding: EdgeInsets.only(
@@ -99,7 +99,7 @@ class _GenderViewState extends State<GenderView> {
                               : interestedGenders[0],
                         );
                       else
-                        widget.genderChanged(
+                        widget.genderChanged!(
                             widget.secondText != "I\'m interested in..."
                                 ? genders[0]
                                 : interestedGenders[0]);
@@ -125,7 +125,7 @@ class _GenderViewState extends State<GenderView> {
                                 ? genders[1]
                                 : interestedGenders[1]);
                       else
-                        widget.genderChanged(
+                        widget.genderChanged!(
                             widget.secondText != "I\'m interested in..."
                                 ? genders[1]
                                 : interestedGenders[1]);
@@ -144,7 +144,7 @@ class _GenderViewState extends State<GenderView> {
                       if (widget.genderChanged == null)
                         Navigator.of(context).pop(genders[2]);
                       else
-                        widget.genderChanged(genders[2]);
+                        widget.genderChanged!(genders[2]);
                     },
                   ),
                 ),

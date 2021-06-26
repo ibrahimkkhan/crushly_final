@@ -1,22 +1,21 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:crushly/BLocs/Followers&Date_Bloc/followers_date_bloc.dart';
-import 'package:crushly/BLocs/Followers&Date_Bloc/followers_date_event.dart';
-import 'package:crushly/BLocs/Followers&Date_Bloc/followers_date_state.dart';
-import 'package:crushly/Common/InListsSearchDelegate.dart';
-import 'package:crushly/Screens/Chat_Page.dart';
-import 'package:crushly/Screens/OpenlyFollowList.dart';
-import 'package:crushly/theme.dart';
-import 'package:crushly/utils/utils.dart';
+import '../blocs/Followers&Date_Bloc/followers_date_bloc.dart';
+import '../blocs/Followers&Date_Bloc/followers_date_event.dart';
+import '../blocs/Followers&Date_Bloc/followers_date_state.dart';
+import '../common/InListsSearchDelegate.dart';
+import '../Screens/Chat_Page.dart';
+import '../Screens/OpenlyFollowList.dart';
+import '../theme/theme.dart';
+import '../utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:crushly/BLocs/User_Bloc/bloc.dart';
-import 'package:crushly/Screens/OtherProfile.dart';
+import '../Screens/OtherProfile.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class DateListPage extends StatefulWidget {
   final bool openChat;
 
-  const DateListPage({Key key, this.openChat}) : super(key: key);
+  const DateListPage({Key? key, required this.openChat}) : super(key: key);
 
 
 
@@ -25,7 +24,7 @@ class DateListPage extends StatefulWidget {
 }
 
 class _DateListPageState extends State<DateListPage> {
-  FollowersDateBloc followersDateBloc;
+  late FollowersDateBloc followersDateBloc;
   final _scrollController = ScrollController();
   final _scrollThreshold = 200.0;
 

@@ -1,31 +1,30 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:crushly/BLocs/Followers&Date_Bloc/followers_date_bloc.dart';
-import 'package:crushly/BLocs/Followers&Date_Bloc/followers_date_event.dart';
-import 'package:crushly/BLocs/Followers&Date_Bloc/followers_date_state.dart';
-import 'package:crushly/BLocs/InListSearch_Bloc/inlistsearch_bloc.dart';
-import 'package:crushly/Common/InListsSearchDelegate.dart';
-import 'package:crushly/Screens/Chat_Page.dart';
-import 'package:crushly/theme.dart';
-import 'package:crushly/utils/utils.dart';
+import '../blocs/Followers&Date_Bloc/followers_date_bloc.dart';
+import '../blocs/Followers&Date_Bloc/followers_date_event.dart';
+import '../blocs/Followers&Date_Bloc/followers_date_state.dart';
+import '../blocs/InListSearch_Bloc/inlistsearch_bloc.dart';
+import '../common/InListsSearchDelegate.dart';
+import '../Screens/Chat_Page.dart';
+import '../theme/theme.dart';
+import '../utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:crushly/BLocs/User_Bloc/bloc.dart';
-import 'package:crushly/Screens/OtherProfile.dart';
+import '../Screens/OtherProfile.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 
 class OpenlyFollowList extends StatefulWidget {
   final bool openChat;
 
-  const OpenlyFollowList({Key key, this.openChat = false}) : super(key: key);
+  const OpenlyFollowList({Key? key, this.openChat = false}) : super(key: key);
 
   @override
   _OpenlyFollowListState createState() => _OpenlyFollowListState();
 }
 
 class _OpenlyFollowListState extends State<OpenlyFollowList> {
-  FollowersDateBloc followersDateBloc;
-  InlistsearchBloc inlistsearchBloc;
+  late FollowersDateBloc followersDateBloc;
+  late InlistsearchBloc inlistsearchBloc;
   final _scrollController = ScrollController();
   final _scrollThreshold = 200.0;
 
@@ -261,10 +260,10 @@ class _OpenlyFollowListState extends State<OpenlyFollowList> {
 }
 
 class SearchBar extends StatelessWidget {
-  final Function onTap;
+  final Function() onTap;
   final String text;
 
-  const SearchBar({Key key, this.onTap, this.text}) : super(key: key);
+  const SearchBar({Key? key, required this.onTap, required this.text}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

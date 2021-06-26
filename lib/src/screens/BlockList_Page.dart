@@ -1,6 +1,6 @@
-import 'package:crushly/Api/Api.dart';
-import 'package:crushly/models/User.dart';
-import 'package:crushly/utils/utils.dart';
+import '../resources/Api.dart';
+import '../models/User.dart';
+import '../utils/utils.dart';
 import 'package:flutter/material.dart';
 
 class BlockListPage extends StatefulWidget {
@@ -22,17 +22,17 @@ class _BlockListPageState extends State<BlockListPage> {
         future: Api.apiClient.getBlockList(widget.myId),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            if (snapshot.data.isNotEmpty) {
+            if (snapshot.data!.isNotEmpty) {
               return ListView.builder(
-                itemCount: snapshot.data.length,
+                itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
                   return ListTile(
-                    title: Text(capitalizeNames(snapshot.data[index].name)),
+                    title: Text(capitalizeNames(snapshot.data![index].name!)),
                     trailing: FlatButton(
                       child: Text("UnBlock"),
                       onPressed: () async {
                         await Api.apiClient
-                            .unBlock(snapshot.data[index].id);
+                            .unBlock(snapshot.data![index].id);
                         setState(() {});
                       },
                     ),

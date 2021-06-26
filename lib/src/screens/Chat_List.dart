@@ -1,37 +1,35 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:crushly/BLocs/Followers&Date_Bloc/bloc.dart';
-import 'package:crushly/Screens/OtherProfile.dart';
-import 'package:crushly/Screens/new_chat_screen.dart';
-import 'package:crushly/theme.dart';
-import 'package:crushly/utils/custom_icons.dart';
-import 'package:crushly/utils/linear_gradient_mask.dart';
-import 'package:crushly/utils/main_screen_delegate.dart';
-import 'package:crushly/utils/our_toast.dart';
+import '../blocs/Followers&Date_Bloc/bloc.dart';
+import '../Screens/OtherProfile.dart';
+import '../screens/new_chat_screen.dart';
+import '../theme/theme.dart';
+import '../utils/custom_icons.dart';
+import '../utils/main_screen_delegate.dart';
+import '../utils/our_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:crushly/BLocs/Massenger_Bloc/bloc.dart';
-import 'package:crushly/Screens/Chat_Page.dart';
-import 'package:crushly/Screens/listForChatList.dart';
-import 'package:crushly/DB/AppDB.dart';
-import 'package:crushly/models/User.dart';
+import '../blocs/Messenger_Bloc/bloc.dart';
+import '../Screens/Chat_Page.dart';
+import '../db/AppDB.dart';
+import '../models/User.dart';
 import 'package:oktoast/oktoast.dart';
 
 class ChatList extends StatefulWidget {
   final List<User> followersList;
 
-  final MainScreenDelegate mainScreenDelegate;
+  final MainScreenDelegate? mainScreenDelegate;
 
-  ChatList({Key key, this.followersList, this.mainScreenDelegate});
+  ChatList({Key? key, required this.followersList,this.mainScreenDelegate});
 
   _ChatListState createState() => _ChatListState();
 }
 
 class _ChatListState extends State<ChatList>
     with AutomaticKeepAliveClientMixin<ChatList> {
-  FollowersDateBloc followersDateBloc;
+  late FollowersDateBloc followersDateBloc;
   final _scrollController = ScrollController();
   final _scrollThreshold = 200.0;
 
@@ -58,7 +56,7 @@ class _ChatListState extends State<ChatList>
 //        ),
         leading: IconButton(
           onPressed: () =>
-              widget.mainScreenDelegate.iconClicked(MainScreenIcon.HOME),
+              widget.mainScreenDelegate!.iconClicked(MainScreenIcon.HOME),
           icon: Icon(
             Icons.arrow_back_ios,
             color: pink,
@@ -132,7 +130,7 @@ class _ChatListState extends State<ChatList>
             child: Stack(
               children: <Widget>[
                 BlocBuilder(
-                    condition: (_, curr) => curr is ResultsReady,
+                    buildWhen: (_, curr) => curr is ResultsReady,
                     bloc: followersDateBloc,
                     builder: (context, state) {
                       if (state is ResultsReady)
@@ -234,18 +232,18 @@ class _ChatListState extends State<ChatList>
                                           .watchUserWithMessages(),
                                       builder: (context, snapshot) {
                                         if (snapshot.hasData) {
-                                          if (snapshot.data.isEmpty) {
+                                          if (snapshot.data!.isEmpty) {
                                             return Center(
                                               child: Text("No Conversations"),
                                             );
                                           }
                                           return ListView.builder(
-                                            itemCount: snapshot.data.length,
+                                            itemCount: snapshot.data!.length,
 //                              itemCount: 8,
                                             itemBuilder: (context, index) {
                                               return ChatCard(
 //                                  null,
-                                                snapshot.data[index],
+                                                snapshot.data![index],
                                               );
                                             },
                                           );
@@ -274,7 +272,7 @@ class _ChatListState extends State<ChatList>
                       decoration: BoxDecoration(
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.grey[300],
+                            color: Colors.grey[300]!,
                             spreadRadius: 3.0,
                             blurRadius: 6.0,
                             offset: Offset(0.0, 4.0),
@@ -406,7 +404,7 @@ class ChatCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        data.user.name,
+                        data.user.name!,
 //                        'Beverly Jones',
                         style: TextStyle(
                           fontSize: 15,

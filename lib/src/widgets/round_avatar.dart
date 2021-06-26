@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class RoundAvatar extends StatelessWidget {
   //
-  RoundAvatar({this.imageUrl, this.height = 80, this.width = 80});
+  RoundAvatar({required this.imageUrl, this.height = 80, this.width = 80});
   final String imageUrl;
   final double height;
   final double width;
@@ -34,7 +34,7 @@ class RoundAvatar extends StatelessWidget {
           height: height,
           decoration: BoxDecoration(
             border: Border.all(
-              color: Colors.grey[100],
+              color: Colors.grey[100]!,
             ),
             borderRadius: BorderRadius.all(Radius.circular(height / 2)),
           ),

@@ -1,7 +1,7 @@
 library my_profile_state;
 
 import 'package:built_value/built_value.dart';
-import 'package:crushly/models/User.dart';
+import '../../models/User.dart';
 
 part 'my_profile_state.g.dart';
 

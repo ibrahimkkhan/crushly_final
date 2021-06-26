@@ -1,33 +1,32 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:crushly/BLocs/User_Bloc/bloc.dart';
-import 'package:crushly/BLocs/landingBloc/bloc.dart';
-import 'package:crushly/BLocs/landingBloc/landing_bloc.dart';
-import 'package:crushly/BLocs/landingBloc/landing_state.dart';
-import 'package:crushly/Screens/my_profile/Myprofile_details.dart';
-import 'package:crushly/Screens/my_profile/my_profile_bloc.dart';
-import 'package:crushly/Screens/my_profile/my_profile_event.dart';
-import 'package:crushly/Screens/my_profile/my_profile_state.dart';
-import 'package:crushly/Screens/new_chat_screen.dart';
-import 'package:crushly/Widgets/paddings.dart';
-import 'package:crushly/theme.dart';
-import 'package:crushly/utils/custom_icons.dart';
-import 'package:crushly/utils/gradient_container_border.dart';
-import 'package:crushly/utils/linear_gradient_mask.dart';
-import 'package:crushly/utils/utils.dart';
+import '../../blocs/User_Bloc/bloc.dart';
+import '../../blocs/landingBloc/bloc.dart';
+import '../../blocs/landingBloc/landing_bloc.dart';
+import '../../blocs/landingBloc/landing_state.dart';
+import '../../screens/my_profile/Myprofile_details.dart';
+import '../../screens/my_profile/my_profile_bloc.dart';
+import '../../screens/my_profile/my_profile_event.dart';
+import '../../screens/my_profile/my_profile_state.dart';
+import '../../screens/new_chat_screen.dart';
+import '../../Widgets/paddings.dart';
+import '../../theme/theme.dart';
+import '../../utils/custom_icons.dart';
+import '../../utils/gradient_container_border.dart';
+import '../../utils/linear_gradient_mask.dart';
+import '../../utils/utils.dart';
 
-//import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:multi_image_picker2/multi_image_picker2.dart';
 
 class MyProfilePage extends StatefulWidget {
   final bool forPhotoUpload;
-  final Function onForwardButtonPressed;
+  final Function() onForwardButtonPressed;
 
   MyProfilePage(
     this.onForwardButtonPressed, {
-    Key key,
+    Key? key,
     this.forPhotoUpload = false,
   }) : assert(forPhotoUpload != null);
 
@@ -37,10 +36,10 @@ class MyProfilePage extends StatefulWidget {
 
 class _MyProfilePageState extends State<MyProfilePage>
     with AutomaticKeepAliveClientMixin<MyProfilePage> {
-  final MyProfileBloc myProfileBloc = MyProfileBloc();
-  ScrollController _controller;
-  Size screenSize;
-  LandingBloc _landingBloc;
+  final MyProfileBloc myProfileBloc = MyProfileBloc(MyProfileState.initial());
+  late ScrollController _controller;
+  late Size screenSize;
+  late LandingBloc _landingBloc;
 
   @override
   bool get wantKeepAlive {
@@ -88,7 +87,7 @@ class _MyProfilePageState extends State<MyProfilePage>
                   visible: !state.isEditing,
                   child: widget.forPhotoUpload
                       ? state.user != null
-                          ? state.user.photos.length >= 3
+                          ? state.user.photos!.length >= 3
                               ? IconButton(
                                   onPressed: () {
                                     widget.onForwardButtonPressed();
@@ -120,7 +119,7 @@ class _MyProfilePageState extends State<MyProfilePage>
                 centerTitle: true,
                 title: Text(
                   state.user != null
-                      ? capitalizeNames(state.user.name) ?? ' '
+                      ? capitalizeNames(state.user.name!) ?? ' '
                       : ' ',
                   maxLines: 1,
                   // overflow: TextOverflow.fade,
@@ -259,7 +258,7 @@ class _MyProfilePageState extends State<MyProfilePage>
                     children: <Widget>[
                       ClipRRect(
                         child: CachedNetworkImage(
-                          imageUrl: state.user.profilePhoto,
+                          imageUrl: state.user.profilePhoto!,
                           imageBuilder: (context, imageProvider) => Container(
                             height: screenSize.width / 4,
                             width: screenSize.width / 4,
@@ -344,7 +343,7 @@ class _MyProfilePageState extends State<MyProfilePage>
                 ? Container(
                     margin: EdgeInsets.only(top: screenSize.height / 80.3),
                     child: Text(
-                      state.user.university,
+                      state.user.university!,
                       style: TextStyle(
                         color: lightBlue,
                         fontSize: screenSize.width / 26.78,
@@ -354,7 +353,7 @@ class _MyProfilePageState extends State<MyProfilePage>
                 : Container(),
             Visibility(
               visible: state.user.greekHouse != null &&
-                  state.user.greekHouse.isNotEmpty,
+                  state.user.greekHouse!.isNotEmpty,
               child: Container(
                 alignment: Alignment.center,
                 margin: EdgeInsets.only(top: screenSize.height / 500),
@@ -392,7 +391,7 @@ class _MyProfilePageState extends State<MyProfilePage>
                         children: <Widget>[
                           Text(
                             state.user.dateList != null
-                                ? state.user.dateList.length.toString()
+                                ? state.user.dateList!.length.toString()
                                 : "0",
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
@@ -485,13 +484,13 @@ class _MyProfilePageState extends State<MyProfilePage>
                 print('moreNumberOfRegPhotosReq $reqPhotos');
                 return widget.forPhotoUpload
                     ? state.user != null
-                        ? state.user.photos.length >= reqPhotos
+                        ? state.user.photos!.length >= reqPhotos
                             ? Container()
                             : Padding(
                                 padding: EdgeInsets.only(
                                     top: screenSize.height / 40),
                                 child: Text(
-                                  'Please upload ${reqPhotos - state.user.photos.length} more ${reqPhotos - state.user.photos.length == 1 ? 'photo' : 'photos'} to continue.',
+                                  'Please upload ${reqPhotos - state.user.photos!.length} more ${reqPhotos - state.user.photos!.length == 1 ? 'photo' : 'photos'} to continue.',
                                   style: TextStyle(
                                       color: Colors.red,
                                       fontSize: screenSize.width / 30),
@@ -550,7 +549,7 @@ class _MyProfilePageState extends State<MyProfilePage>
 //    if (images != null) {}
 
     final images = await MultiImagePicker.pickImages(
-      maxImages: 6 - state.user.photos.length,
+      maxImages: (6 - state.user.photos!.length) as int,
       materialOptions: MaterialOptions(
         actionBarColor: '#454f63',
         statusBarColor: '#454f63',
@@ -566,7 +565,7 @@ class _MyProfilePageState extends State<MyProfilePage>
   }
 
   Widget userPhotosView(MyProfileState state) {
-    print('Photos: ${state.user.photos.length}');
+    print('Photos: ${state.user.photos!.length}');
     return state.user.photos != null
         ? SliverPadding(
             padding: EdgeInsets.symmetric(
@@ -626,7 +625,7 @@ class _MyProfilePageState extends State<MyProfilePage>
                         padding: EdgeInsets.fromLTRB(4.0, 8.0, 4.0, 4.0),
                         child: GradientContainerBorder(
                           onPressed: () {
-                            if (index >= state.user.photos.length &&
+                            if (index >= state.user.photos!.length &&
                                 state.isEditing) _selectPictures(state);
                           },
                           radius: screenSize.height / 81.2,
@@ -638,14 +637,14 @@ class _MyProfilePageState extends State<MyProfilePage>
                               : transparentGradient,
                           child: Container(
                             margin: EdgeInsets.all(
-                              index >= state.user.photos.length &&
+                              index >= state.user.photos!.length &&
                                       !state.isEditing
                                   ? 1.0
                                   : 0.0,
                             ),
                             decoration: BoxDecoration(
                               color: state.isEditing &&
-                                      state.user.photos.length < 6
+                                      state.user.photos!.length < 6
                                   ? white
                                   : Colors.transparent,
                               borderRadius: BorderRadius.circular(
@@ -654,9 +653,9 @@ class _MyProfilePageState extends State<MyProfilePage>
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(
                                   screenSize.height / 81.2),
-                              child: index >= state.user.photos.length &&
+                              child: index >= state.user.photos!.length &&
                                       state.isEditing &&
-                                      state.user.photos.length < 6
+                                      state.user.photos!.length < 6
                                   ? Center(
                                       child: LinearGradientMask(
                                         child: Icon(
@@ -665,11 +664,11 @@ class _MyProfilePageState extends State<MyProfilePage>
                                         ),
                                       ),
                                     )
-                                  : index >= state.user.photos.length
+                                  : index >= state.user.photos!.length
                                       ? Container()
                                       : CachedNetworkImage(
                                           imageUrl:
-                                              state.user.photos[index].url,
+                                              state.user.photos![index].url,
                                           imageBuilder:
                                               (context, imageProvider) =>
                                                   Container(
@@ -691,7 +690,7 @@ class _MyProfilePageState extends State<MyProfilePage>
                       ),
                       AnimatedOpacity(
                         opacity:
-                            state.isEditing && state.user.photos.length > index
+                            state.isEditing && state.user.photos!.length > index
                                 ? 1
                                 : 0,
                         duration: Duration(milliseconds: 200),
@@ -727,10 +726,10 @@ class _MyProfilePageState extends State<MyProfilePage>
                   );
                 },
                 childCount: state.isEditing
-                    ? state.user.photos.length + 1
-                    : state.user.photos.length == 6
+                    ? state.user.photos!.length + 1
+                    : state.user.photos!.length == 6
                         ? 6
-                        : state.user.photos.length + 1,
+                        : state.user.photos!.length + 1,
               ),
             ),
           )

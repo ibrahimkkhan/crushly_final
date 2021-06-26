@@ -1,20 +1,19 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:multi_image_picker2/multi_image_picker2.dart';
 import 'package:photo_view/photo_view.dart';
 
 class PhotoViewPage extends StatefulWidget {
   PhotoViewPage(this.tag, {this.assetImage});
 
   final String tag;
-  final Asset assetImage;
+  final Asset? assetImage;
 
   _PhotoViewPageState createState() => _PhotoViewPageState();
 }
 
 class _PhotoViewPageState extends State<PhotoViewPage> {
-  Size size;
+  late Size size;
   double top = 0;
   double obacity = 1;
 
@@ -60,10 +59,9 @@ class _PhotoViewPageState extends State<PhotoViewPage> {
                 backgroundDecoration: BoxDecoration(),
                 gaplessPlayback: false,
 
-                heroTag: widget.tag,
+                // heroTag: widget.tag,
 
                 enableRotation: false,
-                transitionOnUserGestures: false,
                 //controller:  controller,
                 minScale: PhotoViewComputedScale.contained * 0.8,
                 maxScale: PhotoViewComputedScale.covered * 1.8,
@@ -71,7 +69,7 @@ class _PhotoViewPageState extends State<PhotoViewPage> {
                 basePosition: Alignment.center,
                 //scaleStateCycle: scaleStateCycle
               ) : AssetThumb(
-                asset: widget.assetImage,
+                asset: widget.assetImage!,
                 width: 300,
                 height: 200,
 //                              fit: BoxFit.cover,

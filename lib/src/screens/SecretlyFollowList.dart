@@ -1,10 +1,9 @@
-import 'package:crushly/BLocs/Followers&Date_Bloc/followers_date_bloc.dart';
-import 'package:crushly/BLocs/Followers&Date_Bloc/followers_date_event.dart';
-import 'package:crushly/BLocs/Followers&Date_Bloc/followers_date_state.dart';
-import 'package:crushly/BLocs/User_Bloc/bloc.dart';
-import 'package:crushly/Common/InListsSearchDelegate.dart';
-import 'package:crushly/Screens/OtherProfile.dart';
-import 'package:crushly/utils/utils.dart';
+import '../blocs/Followers&Date_Bloc/followers_date_bloc.dart';
+import '../blocs/Followers&Date_Bloc/followers_date_event.dart';
+import '../blocs/Followers&Date_Bloc/followers_date_state.dart';
+import '../common/InListsSearchDelegate.dart';
+import '../screens/OtherProfile.dart';
+import '../utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,7 +17,7 @@ class SecretlyFollowList extends StatefulWidget {
 }
 
 class _SecretlyFollowListState extends State<SecretlyFollowList> {
-  FollowersDateBloc followersDateBloc;
+  late FollowersDateBloc followersDateBloc;
   final _scrollController = ScrollController();
   final _scrollThreshold = 200.0;
 

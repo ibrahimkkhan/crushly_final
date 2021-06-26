@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../blocs/User_Bloc/bloc.dart';
 import '../blocs/User_Bloc/user_state.dart';
-import '../DB/AppDB.dart' as db;
+import '../db/AppDB.dart' as db;
 import '../Screens/OtherProfile.dart';
 import '../theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -62,7 +62,7 @@ class _NotificationPageState extends State<NotificationPage> {
         ),
         backgroundColor: pageBackground,
         body: BlocBuilder<UserBloc, UserState>(
-          condition: (prev, cur) =>
+          buildWhen: (prev, cur) =>
               cur is LoadingNotification || cur is NotificationReady,
           builder: (context, state) {
             return SafeArea(
@@ -133,7 +133,7 @@ class _NotificationPageState extends State<NotificationPage> {
     );
   }
 
-  _navigate({Widget screen}) {
+  _navigate({Widget? screen}) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -274,7 +274,7 @@ class NotificationTile extends StatelessWidget {
   final db.Notification notification;
   final String myId;
 
-  const NotificationTile({Key key, this.notification, this.myId})
+  const NotificationTile({Key? key, required this.notification, required this.myId})
       : super(key: key);
 
   @override

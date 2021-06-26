@@ -1,17 +1,17 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:crushly/Api/Api.dart';
-import 'package:crushly/Screens/my_profile/my_profile_event.dart';
-import 'package:crushly/Screens/my_profile/my_profile_state.dart';
-import 'package:crushly/SharedPref/SharedPref.dart';
-import 'package:crushly/models/User.dart';
-import 'package:crushly/models/upload_photo.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
+import '../../resources/Api.dart';
+import '../../screens/my_profile/my_profile_event.dart';
+import '../../screens/my_profile/my_profile_state.dart';
+import '../../SharedPref/SharedPref.dart';
+import '../../models/User.dart';
+import '../../models/upload_photo.dart';
 
 class MyProfileBloc extends Bloc<MyProfileEvent, MyProfileState> {
   @override
   MyProfileState get initialState => MyProfileState.initial();
+  MyProfileBloc(MyProfileState initialState):super(MyProfileState.initial());
 
   @override
   Stream<MyProfileState> mapEventToState(MyProfileEvent event) async* {
@@ -29,7 +29,7 @@ class MyProfileBloc extends Bloc<MyProfileEvent, MyProfileState> {
           ],
         );
         this.add(GetMyProfile());
-        if (response.isNotEmpty)
+        if (response!.isNotEmpty)
           yield state.rebuild((b) => b..isLoading = false);
         else
           yield state.rebuild((b) => b..isLoading = false);
@@ -43,7 +43,7 @@ class MyProfileBloc extends Bloc<MyProfileEvent, MyProfileState> {
         List<UploadPhoto> photos = [];
         for (int i = 0; i < event.images.length; i++) {
           photos.add(
-              UploadPhoto(event.images[i], state.user.photos.length + i + 1));
+              UploadPhoto(event.images[i], state.user.photos!.length + i + 1));
         }
         await Api.apiClient.setPhotos(photos);
         this.add(GetMyProfile());
@@ -57,7 +57,7 @@ class MyProfileBloc extends Bloc<MyProfileEvent, MyProfileState> {
     print('MyProfileBloc => mapEventToState => Loading..');
     yield MyProfileState.loadingMyProfile(state);
     final myId = await SharedPref.pref.getMyId();
-    User user;
+    late User user;
     await Api.apiClient.getMyInfo().then((User userResponse) {
       print('MyProfileBloc => mapEventToState => Success.');
       user = userResponse;

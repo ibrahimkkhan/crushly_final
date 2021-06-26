@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import '../../resources/UniApi.dart';
 import '../../common/UniversitySearchDelegate.dart';
@@ -15,17 +14,17 @@ import 'package:http/http.dart' as http;
 import 'package:page_transition/page_transition.dart';
 
 class SchoolChoiceView extends StatefulWidget {
-  final Function(University) schoolNameChanged;
-  // final Function(String) greekHouseChanged;
-  final String schoolName;
-  // final String greekHouse;
+  final Function(University)? schoolNameChanged;
+  final Function(String)? greekHouseChanged;
+  final String? schoolName;
+  final String? greekHouse;
 
   const SchoolChoiceView({
     Key? key,
-    required this.schoolNameChanged,
-    // this.greekHouseChanged,
-    // this.greekHouse,
-    required this.schoolName,
+    this.schoolNameChanged,
+    this.greekHouseChanged,
+    this.greekHouse,
+    this.schoolName,
   }) : super(key: key);
 
   @override
@@ -90,17 +89,17 @@ class _SchoolChoiceViewState extends State<SchoolChoiceView> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.0),
                   child: SelectableButton(
-                    option: widget.schoolName.isEmpty
+                    option: widget.schoolName!.isEmpty
                         ? 'University/College'
-                        : widget.schoolName,
+                        : widget.schoolName!,
                     selectedOption:
-                        widget.schoolName.isNotEmpty ? widget.schoolName : '',
+                        widget.schoolName!.isNotEmpty ? widget.schoolName!: '',
                     onClick: () async {
                       selectedSchoolType = SchoolType.university;
                       final uni = await showSearch(
                           context: context,
                           delegate: UserSearchDelegate((uniName) {
-                            widget.schoolNameChanged(uniName);
+                            widget.schoolNameChanged!(uniName);
                           }));
 
                       /*_controller.nextPage(

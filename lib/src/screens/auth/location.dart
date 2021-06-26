@@ -7,8 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../theme/theme.dart';
-
 class Location extends StatefulWidget {
   @override
   _LocationState createState() => _LocationState();
@@ -49,10 +47,10 @@ class _LocationState extends State<Location> {
               Navigator.pop(context);
             }),
       ),
-      body: BlocListener(
+      body: BlocListener<AuthBloc, AuthState>(
         listener: (BuildContext context, state) {
-          if (state!.locationAcquiredSuccessfully || state.errorGettingLocation)
-            _navigate();
+          if (state is LocationState) if (state!.locationAcquiredSuccessfully ||
+              state.errorGettingLocation) _navigate();
         },
         listenWhen: (_, currentState) {
           return currentState is LocationState;

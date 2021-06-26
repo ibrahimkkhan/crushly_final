@@ -1,6 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 
-import 'package:crushly/BLocs/Ring_Bloc/bloc.dart';
+import '../blocs/Ring_Bloc/bloc.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,8 +10,9 @@ class RingsPage extends StatefulWidget {
 }
 
 class _RingsPageState extends State<RingsPage> with TickerProviderStateMixin {
-  AnimationController controller;
+  late AnimationController controller;
   bool isPanelUp = false;
+
   @override
   void initState() {
     super.initState();
@@ -62,13 +63,15 @@ class _RingsPageState extends State<RingsPage> with TickerProviderStateMixin {
 
 class BothPanels extends StatefulWidget {
   BothPanels(this.controller);
+
   final AnimationController controller;
 
   _BothPanelsState createState() => _BothPanelsState();
 }
 
 class _BothPanelsState extends State<BothPanels> {
-  RingBloc ringBloc;
+  late RingBloc ringBloc;
+
   @override
   void initState() {
     ringBloc = RingBloc();
@@ -91,8 +94,9 @@ class _BothPanelsState extends State<BothPanels> {
         status == AnimationStatus.forward;
   }
 
-  Animation<double> obacityAnimation;
+  late Animation<double> obacityAnimation;
   static const double headerHieght = 50.0;
+
   Animation<RelativeRect> getPanelAnimation(BoxConstraints constraints) {
     final hieght = constraints.biggest.height;
     final backPanelHeight = hieght - headerHieght;
@@ -162,11 +166,12 @@ class _BothPanelsState extends State<BothPanels> {
   }
 
   bool loadingAccept = false;
+
   @override
   Widget build(BuildContext context) {
     return BlocListener(
       bloc: ringBloc,
-      condition: (prev, cur) => cur is ErrorAccorrd,
+      listenWhen: (prev, cur) => cur is ErrorAccorrd,
       listener: (context, state) {
         if (state is ErrorAccorrd) {
           Scaffold.of(context).showSnackBar(SnackBar(
@@ -186,7 +191,7 @@ class _BothPanelsState extends State<BothPanels> {
 
     return BlocBuilder(
       bloc: ringBloc,
-      condition: (prev, cur) => !(cur is ErrorAccorrd),
+      buildWhen: (prev, cur) => !(cur is ErrorAccorrd),
       builder: (context, state) {
         if (state is HolOffRingsReady) {
           loadingAccept = false;
@@ -199,9 +204,11 @@ class _BothPanelsState extends State<BothPanels> {
                 alignment: Alignment.center,
                 children: <Widget>[
                   CarouselSlider(
-                    height: sizeAware.height * 0.5,
-                    enlargeCenterPage: true,
-                    enableInfiniteScroll: false,
+                    options: CarouselOptions(
+                      height: sizeAware.height * 0.5,
+                      enlargeCenterPage: true,
+                      enableInfiniteScroll: false,
+                    ),
                     items: state.offeredRings.map(
                       (ring) {
                         return Stack(
@@ -278,9 +285,8 @@ class _BothPanelsState extends State<BothPanels> {
                                                     color: Colors.red),
                                                 child: GestureDetector(
                                                   onTap: () {
-                                                    ringBloc.add(
-                                                        AcceptOffer(
-                                                            "false", ring.id));
+                                                    ringBloc.add(AcceptOffer(
+                                                        "false", ring.id));
                                                     setState(() {
                                                       loadingAccept = true;
                                                     });
@@ -331,7 +337,7 @@ class _BothPanelsState extends State<BothPanels> {
     final sizeAware = MediaQuery.of(context).size;
     return BlocBuilder(
       bloc: ringBloc,
-      condition: (prev, cur) => !(cur is ErrorAccorrd),
+      buildWhen: (prev, cur) => !(cur is ErrorAccorrd),
       builder: (context, state) {
         if (state is HolOffRingsReady) {
           if (state.holdingRings.isNotEmpty) {
@@ -340,9 +346,11 @@ class _BothPanelsState extends State<BothPanels> {
                 children: <Widget>[
                   Expanded(
                     child: CarouselSlider(
-                      height: sizeAware.height * 0.6,
-                      enlargeCenterPage: true,
-                      enableInfiniteScroll: false,
+                      options: CarouselOptions(
+                        height: sizeAware.height * 0.6,
+                        enlargeCenterPage: true,
+                        enableInfiniteScroll: false,
+                      ),
                       items: state.holdingRings.map(
                         (ring) {
                           return Stack(

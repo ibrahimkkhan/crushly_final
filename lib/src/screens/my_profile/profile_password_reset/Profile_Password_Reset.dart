@@ -1,12 +1,12 @@
-import 'package:crushly/Screens/my_profile/profile_password_reset/PasswordResetBloc.dart';
-import 'package:crushly/Screens/my_profile/profile_password_reset/PasswordResetEvent.dart';
-import 'package:crushly/utils/gradient_container_border.dart';
+import '../../../screens/my_profile/profile_password_reset/PasswordResetBloc.dart';
+import '../../../screens/my_profile/profile_password_reset/PasswordResetEvent.dart';
+import '../../../utils/gradient_container_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import '../../../theme.dart';
+import '../../../theme/theme.dart';
 import 'PasswordResetState.dart';
 
 class ProfilePasswordReset extends StatefulWidget {
@@ -15,16 +15,16 @@ class ProfilePasswordReset extends StatefulWidget {
 }
 
 class _ProfilePasswordResetState extends State<ProfilePasswordReset> {
-  TextEditingController _currentPassword;
-  TextEditingController _newPassword;
-  TextEditingController _newPasswordConfirm;
-  FocusNode currentFocus;
-  FocusNode newFocus;
-  FocusNode confirmFocus;
-  PasswordResetBloc _bloc;
+  late TextEditingController _currentPassword;
+  late TextEditingController _newPassword;
+  late TextEditingController _newPasswordConfirm;
+  late FocusNode currentFocus;
+  late FocusNode newFocus;
+  late FocusNode confirmFocus;
+  late PasswordResetBloc _bloc;
   bool isLoading = false, isSuccess = false, isFail = false;
   String error = "";
-  Size size;
+  late Size size;
 
   @override
   void initState() {
@@ -34,7 +34,7 @@ class _ProfilePasswordResetState extends State<ProfilePasswordReset> {
     _currentPassword = TextEditingController();
     _newPassword = TextEditingController();
     _newPasswordConfirm = TextEditingController();
-    _bloc = PasswordResetBloc();
+    _bloc = PasswordResetBloc(InitialState());
     super.initState();
   }
 
@@ -100,7 +100,7 @@ class _ProfilePasswordResetState extends State<ProfilePasswordReset> {
             });
           }
           if (state is CurrentState) {
-            if (state.isSuccess) {
+            if (state.isSuccess!) {
               Fluttertoast.showToast(
                   msg: "Success",
                   backgroundColor: toastSuccessColor,
@@ -110,10 +110,10 @@ class _ProfilePasswordResetState extends State<ProfilePasswordReset> {
               Navigator.pop(context);
             }
             setState(() {
-              isLoading = state.isLoading;
-              isSuccess = state.isSuccess;
-              isFail = state.isFail;
-              error = state.error;
+              isLoading = state.isLoading!;
+              isSuccess = state.isSuccess!;
+              isFail = state.isFail!;
+              error = state.error!;
             });
           }
         },

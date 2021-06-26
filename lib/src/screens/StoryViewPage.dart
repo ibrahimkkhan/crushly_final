@@ -1,5 +1,5 @@
-import 'package:crushly/BLocs/Massenger_Bloc/massenger_bloc.dart';
-import 'package:crushly/DB/AppDB.dart';
+import '../blocs/Messenger_Bloc/messenger_bloc.dart';
+import '../db/AppDB.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +10,7 @@ class StoryViewPage extends StatefulWidget {
   List<UserWithStory> userWithStory;
 
   StoryViewPage(this.userWithStory);
+
   @override
   _StoryViewPageState createState() => _StoryViewPageState();
 }
@@ -60,30 +61,32 @@ class _StoryViewPageState extends State<StoryViewPage> {
                   child: CircularProgressIndicator(),
                 )
               : StoryView(
-                List.generate(
-                    stories.length,
-                    (index) => StoryItem.pageImage(
-                        CachedNetworkImageProvider(stories[index].url),
-                        imageFit: BoxFit.cover)),
-                onStoryShow: (s) {
-                  print("Showing a story");
-                },
-                onComplete: () {
-                  widget.userWithStory.removeAt(0);
-                  if (widget.userWithStory.isNotEmpty) {
-                    Navigator.pushReplacement(
-                        context,
-                        CupertinoPageRoute(
-                            builder: (context) =>
-                                StoryViewPage(widget.userWithStory)));
-                  } else {
-                    Navigator.pop(context);
-                  }
-                },
-                progressPosition: ProgressPosition.top,
-                repeat: false,
-                controller: storyController,
-              ),
+                  storyItems: List.generate(
+                      stories.length,
+                      (index) => StoryItem.pageImage(
+                            url: stories[index].url,
+                            imageFit: BoxFit.cover,
+                            controller: storyController,
+                          )),
+                  onStoryShow: (s) {
+                    print("Showing a story");
+                  },
+                  onComplete: () {
+                    widget.userWithStory.removeAt(0);
+                    if (widget.userWithStory.isNotEmpty) {
+                      Navigator.pushReplacement(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) =>
+                                  StoryViewPage(widget.userWithStory)));
+                    } else {
+                      Navigator.pop(context);
+                    }
+                  },
+                  progressPosition: ProgressPosition.top,
+                  repeat: false,
+                  controller: storyController,
+                ),
           Padding(
             padding: const EdgeInsets.all(15.0),
             child: Row(

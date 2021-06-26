@@ -6,5 +6,5 @@ abstract class PasswordResetEvent {}
 class PasswordResetSended extends PasswordResetEvent {
   final String oldPassword, newPassword;
 
-  PasswordResetSended({this.newPassword, this.oldPassword});
+  PasswordResetSended({required this.newPassword, required this.oldPassword});
 }

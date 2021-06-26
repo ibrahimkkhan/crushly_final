@@ -5,7 +5,7 @@ import 'package:crushly_final/src/db/AppDB.dart';
 import '../blocs/Messenger_Bloc/bloc.dart';
 import '../blocs/PhotoManger_Bloc/bloc.dart';
 import '../blocs/User_Bloc/bloc.dart';
-import '../DB/AppDB.dart';
+import '../db/AppDB.dart';
 import '../screens/BlockList_Page.dart';
 import '../screens/Chat_List.dart';
 import '../screens/DateListPage.dart';
@@ -141,7 +141,7 @@ class _MyProfileState extends State<MyProfile> {
                 context, (Route<dynamic> route) => route is PageRoute);
             BlocProvider.of<UserBloc>(context).add(GetFollowee());
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => MyFolloweesList()));
+                MaterialPageRoute(builder: (context) => MyFolloweesList(openChat: false,)));
           }
         }
       },
@@ -534,7 +534,7 @@ class _MyProfileState extends State<MyProfile> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => DateListPage(),
+                                    builder: (context) => DateListPage(openChat: false,),
                                   ),
                                 );
                               },
@@ -744,7 +744,7 @@ class _MyProfileState extends State<MyProfile> {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     StoryViewPage(
-                                                        snapshot.data as List<dynamic>)));
+                                                        snapshot.data as List<UserWithStory>)));
                                       },
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class DialogDescription extends StatelessWidget {
   //
-  DialogDescription({this.text});
+  DialogDescription({required this.text});
   final String text;
 
   @override

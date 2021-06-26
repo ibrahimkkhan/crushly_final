@@ -1,21 +1,21 @@
-import 'package:crushly/BLocs/Massenger_Bloc/massenger_bloc.dart';
-import 'package:crushly/BLocs/User_Bloc/user_bloc.dart';
-import 'package:crushly/BLocs/User_Bloc/user_event.dart';
-import 'package:crushly/Screens/auth/sign_in.dart';
-import 'package:crushly/Screens/my_profile/profile_password_reset/Profile_Password_Reset.dart';
-import 'package:crushly/models/User.dart';
+import '../../blocs/Messenger_Bloc/messenger_bloc.dart';
+import '../../blocs/User_Bloc/user_bloc.dart';
+import '../../blocs/User_Bloc/user_event.dart';
+import '../../screens/auth/sign_in.dart';
+import '../../screens/my_profile/profile_password_reset/Profile_Password_Reset.dart';
+import '../../models/User.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../theme.dart';
+import '../../theme/theme.dart';
 import 'profile_settings/profile_settings_page.dart';
 
 class MyProfileDetails extends StatefulWidget {
   final User user;
 
   MyProfileDetails({
-    this.user,
+    required this.user,
   });
 
   @override

@@ -1,19 +1,18 @@
-import 'package:crushly/BLocs/Massenger_Bloc/massenger_bloc.dart';
-import 'package:crushly/BLocs/Massenger_Bloc/massenger_event.dart';
-import 'package:crushly/BLocs/User_Bloc/user_bloc.dart';
-import 'package:crushly/BLocs/User_Bloc/user_event.dart';
-import 'package:crushly/Screens/auth/PasswordReset/forgot_password.dart';
-import 'package:crushly/Screens/auth/sign_in.dart';
-import 'package:crushly/Screens/auth/singup/birthday_view.dart';
-import 'package:crushly/Screens/auth/singup/gender_screen.dart';
-import 'package:crushly/Screens/auth/singup/gender_view.dart';
-import 'package:crushly/Screens/auth/singup/school_choice_view.dart';
-import 'package:crushly/Screens/auth/singup/signup_page.dart';
-import 'package:crushly/Screens/auth/social_connect.dart';
-import 'package:crushly/models/User.dart';
-import 'package:crushly/theme.dart';
-import 'package:crushly/utils/linear_gradient_mask.dart';
-import 'package:crushly/utils/utils.dart';
+import '../../../blocs/Messenger_Bloc/messenger_bloc.dart';
+import '../../../blocs/Messenger_Bloc/messenger_event.dart';
+import '../../../blocs/User_Bloc/user_bloc.dart';
+import '../../../blocs/User_Bloc/user_event.dart';
+import '../../../screens/auth/PasswordReset/forgot_password.dart';
+import '../../../Screens/auth/sign_in.dart';
+import '../../../screens/singup/birthday_view.dart';
+import '../../../screens/singup/gender_screen.dart';
+import '../../../screens/singup/gender_view.dart';
+import '../../../screens/singup/school_choice_view.dart';
+import '../../../Screens/singup/signup_page.dart';
+import '../../../models/User.dart';
+import '../../../theme/theme.dart';
+import '../../../utils/linear_gradient_mask.dart';
+import '../../../utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,7 +20,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class ProfileSettingsPage extends StatefulWidget {
   final User user;
 
-  const ProfileSettingsPage({Key key, this.user}) : super(key: key);
+  const ProfileSettingsPage({required Key key, required this.user}) : super(key: key);
 
   @override
   _ProfileSettingsPageState createState() => _ProfileSettingsPageState();
@@ -86,8 +85,8 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                 SizedBox(
                   height: size.width / 18.75,
                 ),
-                _getItem(size, 'Name', capitalizeNames(widget.user.name), true),
-                _getItem(size, 'Email', widget.user.email, true),
+                _getItem(size, 'Name', capitalizeNames(widget.user.name!), true),
+                _getItem(size, 'Email', widget.user.email!, true),
                 GestureDetector(
                   onTap: () async {
                     final result = await Navigator.of(context).push(
@@ -95,7 +94,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                         builder: (_) => Scaffold(
                           body: GenderView(
                             secondText: 'I\'m a...',
-                            gender: capitalizeNames(widget.user.gender),
+                            gender: capitalizeNames(widget.user.gender!),
                             genderType: GenderType.GENDER,
                           ),
                         ),
@@ -110,7 +109,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                   child: _getItem(
                     size,
                     'Gender',
-                    widget.user.gender,
+                    widget.user.gender!,
                     true,
                   ),
                 ),
@@ -121,7 +120,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                         builder: (_) => Scaffold(
                           body: GenderView(
                             secondText: 'I\'m interested in...',
-                            gender: capitalizeNames(widget.user.interestedIn),
+                            gender: capitalizeNames(widget.user.interestedIn!),
                             genderType: GenderType.INTERESTED_IN,
                           ),
                         ),
@@ -134,7 +133,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                   child: _getItem(
                     size,
                     'Interested in',
-                    capitalizeNames(widget.user.interestedIn),
+                    capitalizeNames(widget.user.interestedIn!),
                     true,
                   ),
                 ),
